@@ -25,7 +25,8 @@ private:
 	void ApiSetReqHeader(TSharedRef<IHttpRequest> &request, const std::string &bodyData);
 #endif
 
-
+public:
+	BApi(const std::string &accessKeyId, const std::string &accessKeySecret);
 	inline void StartInteractivePlay(const std::string &code, const std::string &appId, CallBack callback)
 	{
 		ApiPost((OpenLiveDomain + InteractivePlayStart), (std::string("{\"code\":\"") + code + "\",\"app_id\":" + appId + "}"), callback);
@@ -40,6 +41,4 @@ private:
 	{
 		ApiPost((OpenLiveDomain + InteractivePlayEnd), (std::string("{\"app_id\":") + appId + ",\"game_id\":\"" + gameId + "\"}"), callback);
 	}
-public:
-	BApi(const std::string &accessKeyId, const std::string &accessKeySecret);
 };

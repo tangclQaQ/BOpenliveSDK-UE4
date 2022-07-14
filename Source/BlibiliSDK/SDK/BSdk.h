@@ -21,7 +21,11 @@ public:
 	void init(const std::string &accessKeyId, const std::string &accessKeySecret, const std::string &appId, const std::string &code);
 	void CreateWebsocket();
 	static void WebSocketError(EErrorString error);
-	static void WebSocketMessage(std::string string);
+	static void WebSocketMessage(std::string message);
+	void Start();
+	static void OnStartInteractivePlay(bool isSuccess, const std::string& message);
+	void timerEvent();
+	static void OnTimerEvent(bool isSuccess, const std::string & response);
 
 private:
 	static UBSdk* s_UBSdk;
@@ -42,4 +46,5 @@ private:
 
 	UBWebsocket *danMuQWebsocket = nullptr;
 	BApi *bapi = nullptr;
+	FTimerHandle m_beatTimer;
 };

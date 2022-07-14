@@ -45,10 +45,83 @@ void UBSdk::CreateWebsocket()
 
 void UBSdk::WebSocketError(EErrorString error)
 {
-	
+	// 删除，然后等待计时器重新连接
+	delete GetInstancePtr()->danMuQWebsocket;
+	GetInstancePtr()->danMuQWebsocket = nullptr;
 }
 
-void UBSdk::WebSocketMessage(std::string string)
+void UBSdk::WebSocketMessage(std::string message)
 {
-	
+	nlohmann::json jsonData = nlohmann::json::parse(message);
+	std::string cmd = jsonData["cmd"].get<std::string>();
+	UE_LOG(LogTemp, Log, TEXT("%s"), *message.c_str());
+	if (cmd.find("LIVE_OPEN_PLATFORM_DM") != std::string::npos) {
+		GetInstancePtr()->danmaData.setValue(jsonData["data"]);
+		//emit ReceivedDanmaKu(this->danmaData);
+	} else if (cmd.find("LIVE_OPEN_PLATFORM_SEND_GIFT") != std::string::npos) {
+		GetInstancePtr()->giftData.setValue(jsonData["data"]);
+		//emit ReceivedGift(this->giftData);
+	} else if (cmd.find("LIVE_OPEN_PLATFORM_SUPER_CHAT") != std::string::npos) {
+		GetInstancePtr()->superChatData.setValue(jsonData["data"]);
+		//emit ReceivedSuperChat(this->superChatData);
+	} else if (cmd.find("LIVE_OPEN_PLATFORM_SUPER_CHAT_DEL") != std::string::npos) {
+		GetInstancePtr()->superChatDelData.setValue(jsonData["data"]);
+		//emit ReceivedSuperChatDel(this->superChatDelData);
+	} else if (cmd.find("LIVE_OPEN_PLATFORM_GUARD") != std::string::npos) {
+		GetInstancePtr()->guardBuyData.setValue(jsonData["data"]);
+		//emit ReceivedGuardBuy(this->guardBuyData);
+	}
 }
+
+void UBSdk::Start()
+{
+	bapi->StartInteractivePlay(m_code, m_appId, OnStartInteractivePlay);
+}
+
+void UBSdk::OnStartInteractivePlay(bool isSuccess, const std::string &message)
+{
+	if(isSuccess == false)
+	{
+		//TODO:notify error
+		return;
+	}
+	nlohmann::json jsonData = nlohmann::json::parse(message);
+	assert(jsonData["code"].get<int64_t>() == 0);
+	GetInstancePtr()->GetWorld()->GetTimerManager().SetTimer(GetInstancePtr()->m_beatTimer, GetInstancePtr(), &UBSdk::timerEvent, 1, true); // 掉线检测和发送心跳包
+	GetInstancePtr()->apiInfo.setValue(jsonData["data"]);
+	GetInstancePtr()->CreateWebsocket();
+}
+
+void UBSdk::timerEvent()
+{
+	static int count = 0;
+	// 这里使用的是19秒发一次心跳包
+	if (count >= 19) {
+		bapi->HeartBeatInteractivePlay(apiInfo.gameId, &UBSdk::OnTimerEvent);
+		count = 0;
+	} else {
+		++count;
+	}
+	// 每秒都会判断websocket是否断开了，断开的话就重连
+	if (danMuQWebsocket == nullptr) {
+		UE_LOG(LogTemp, Log, TEXT("websocket re connect"));
+		CreateWebsocket();
+	}
+}
+
+void UBSdk::OnTimerEvent(bool isSuccess, const std::string & response)
+{
+	nlohmann::json jsonData = nlohmann::json::parse(response);
+	if (jsonData.find("code") != jsonData.end()) {
+		if (jsonData["code"].get<int64_t>() == 0) {
+			UE_LOG(LogTemp, Log, TEXT("发送心跳包响应成功"));
+		} else {
+			UE_LOG(LogTemp, Log, TEXT("发送心跳包响应失败，有可能是超时了"));
+			// 这样直接用我还没测试过，可能会有bug
+			GetInstancePtr()->Start();
+		}
+	} else {
+		UE_LOG(LogTemp, Log, TEXT("发送心跳包失败"));
+	}
+}
+

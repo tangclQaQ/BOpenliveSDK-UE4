@@ -1,4 +1,5 @@
 #include "BWebsocket.h"
+#include "iostream"
 
 /*
  * 对接B站WebSocket
@@ -26,7 +27,7 @@ void UBWebsocket::init(const ApiInfo& apiInfo, CALLBACKERROR CallbackError, CALL
 	Socket->OnConnected().AddLambda([=]() -> void {
 		// This code will run once connected.
 		std::stringstream ss;
-		danmakuByte buffer[4];
+		unsigned char buffer[4] = {};
 
 		//写入验证字符串长度
 		getBytesByInt(buffer, (int)(m_apiInfo.authBody.length() + 16));
@@ -53,17 +54,24 @@ void UBWebsocket::init(const ApiInfo& apiInfo, CALLBACKERROR CallbackError, CALL
 		ss << m_apiInfo.authBody;
 		//最后生成房间包，并将包发送给服务器
 		std::string roomPack = ss.str();
+		FString rooPackStr(roomPack.c_str());
+		std::cout << "1111111111111111111:" << roomPack;
+		UE_LOG(LogTemp, Log, TEXT("auth count is:%d"), rooPackStr.Len());
 
 		// 此处的'\0'不能包括进去
 		if (!Socket->IsConnected())
 		{
 			// Don't send if we're not connected.
+			UE_LOG(LogTemp, Log, TEXT("WebSocket is not connected"));
 			CallbackError(ERROR_WEBSOCKET_CONNECT);
 			return;
 		}
 		Socket->Send(roomPack.c_str());
-
-		GetWorld()->GetTimerManager().SetTimer(m_beatTimer, this, &UBWebsocket::heartBeat, 29, true);
+		UWorld* world = GEngine->GameViewport->GetWorld();
+		if (world == nullptr) {
+			UE_LOG(LogTemp, Log, TEXT("UWorld is null"));
+		}
+		world->GetTimerManager().SetTimer(m_beatTimer, this, &UBWebsocket::heartBeat, 29, true);
 		});
 
 		Socket->OnConnectionError().AddLambda([=](const FString& Error) -> void {

@@ -7,10 +7,6 @@ UBSdk::~UBSdk()
         delete bapi;
         bapi = nullptr;
     }
-    if (danMuQWebsocket != nullptr) {
-        delete danMuQWebsocket;
-        danMuQWebsocket = nullptr;
-    }
 }
 
 UBSdk* UBSdk::GetInstancePtr()
@@ -35,19 +31,15 @@ void UBSdk::init(const std::string& accessKeyId, const std::string& accessKeySec
 
 void UBSdk::CreateWebsocket()
 {
-	if (danMuQWebsocket != nullptr) {
-		delete danMuQWebsocket;
-		danMuQWebsocket = nullptr;
+	if (danMuQWebsocket == nullptr) {
+		danMuQWebsocket = NewObject<UBWebsocket>(this);
 	}
-	danMuQWebsocket = NewObject<UBWebsocket>(this);
 	danMuQWebsocket->init(apiInfo, WebSocketError, WebSocketMessage);
 }
 
 void UBSdk::WebSocketError(EErrorString error)
 {
-	// 删除，然后等待计时器重新连接
-	delete GetInstancePtr()->danMuQWebsocket;
-	GetInstancePtr()->danMuQWebsocket = nullptr;
+
 }
 
 void UBSdk::WebSocketMessage(std::string message)
@@ -87,7 +79,18 @@ void UBSdk::OnStartInteractivePlay(bool isSuccess, const std::string &message)
 	}
 	nlohmann::json jsonData = nlohmann::json::parse(message);
 	assert(jsonData["code"].get<int64_t>() == 0);
-	GetInstancePtr()->GetWorld()->GetTimerManager().SetTimer(GetInstancePtr()->m_beatTimer, GetInstancePtr(), &UBSdk::timerEvent, 1, true); // 掉线检测和发送心跳包
+	FString messageStr(message.c_str());
+	UE_LOG(LogTemp, Log, TEXT("message is %s"), *messageStr);
+	int64_t code = jsonData["code"].get<int64_t>();
+	if (code != 0) {
+		//TODO:notify error
+		return;
+	}
+	UWorld* world = GEngine->GameViewport->GetWorld();
+	if (world == nullptr) {
+		UE_LOG(LogTemp, Log, TEXT("UWorld is null"));
+	}
+	world->GetTimerManager().SetTimer(GetInstancePtr()->m_beatTimer, GetInstancePtr(), &UBSdk::timerEvent, 1, true); // 掉线检测和发送心跳包
 	GetInstancePtr()->apiInfo.setValue(jsonData["data"]);
 	GetInstancePtr()->CreateWebsocket();
 }

@@ -29,7 +29,7 @@ public:
 	BApi(const std::string &accessKeyId, const std::string &accessKeySecret);
 	inline void StartInteractivePlay(const std::string &code, const std::string &appId, CallBack callback)
 	{
-		ApiPost((OpenLiveDomain + InteractivePlayStart), (std::string("{\"code\":\"") + code + "\",\"app_id\":" + appId + "}"), callback);
+		ApiPost("https://live-open.biliapi.com/v2/app/start", (std::string("{\"code\":\"") + code + "\",\"app_id\":" + appId + "}"), callback);
 	}
 
 	inline void HeartBeatInteractivePlay(const std::string &gameId, CallBack callback)

@@ -16,6 +16,11 @@ class BLIBILISDK_API ABlibiliSDKGameModeBase : public AGameModeBase
 	GENERATED_BODY()
 public:
 	ABlibiliSDKGameModeBase();
+
+	UFUNCTION(BlueprintCallable)
+		void LoadMapEnd();
+
+	virtual void BeginPlay();
 private:
 	UBSdk * bsdk = nullptr;
 };

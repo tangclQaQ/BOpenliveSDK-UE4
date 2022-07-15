@@ -6,6 +6,7 @@
 #include "BApiInfo.h"
 #include "TimerManager.h"
 #include "zlib.h"
+#include <memory>
 #include "BWebsocket.generated.h"
 
 #define UNZIP_BUFF_SIZE 65536

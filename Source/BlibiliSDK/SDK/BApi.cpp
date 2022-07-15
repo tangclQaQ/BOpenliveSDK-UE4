@@ -1,5 +1,6 @@
 ﻿#include "BApi.h"
 #include "HttpModule.h"
+#include "Tool/Sha256.h"
 #include <ctime>
 #include <map>
 
@@ -18,6 +19,8 @@ void BApi::ApiPost(const std::string& url, const std::string& bodyData, CallBack
 #else
 	TSharedRef<IHttpRequest> request = FHttpModule::Get().CreateRequest();
 #endif
+	int dataSize = bodyData.length();
+	FString bodyDataString = bodyData.c_str();
 	ApiSetReqHeader(request, bodyData); // 请求头签名
 	request->SetURL(UTF8_TO_TCHAR(url.c_str()));
 	request->SetVerb(TEXT("POST"));
@@ -75,7 +78,7 @@ void BApi::ApiSetReqHeader(TSharedRef<IHttpRequest>& request, const std::string&
 		}
 	}
 
-	std::string auth;// = SHA256(sig.c_str(), m_accessKeySecret.c_str(), QCryptographicHash::Sha256).toHex().toStdString();
+	std::string auth = TCHAR_TO_UTF8(*HMAC_SHA256::Hash(m_accessKeySecret.c_str(), sig.c_str()).ToHexString());
 
 	request->SetHeader("Accept", "application/json");
 	request->SetHeader("Content-Type", "application/json");

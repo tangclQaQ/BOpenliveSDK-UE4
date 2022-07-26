@@ -33,6 +33,7 @@ void UBSdk::CreateWebsocket()
 {
 	if (danMuQWebsocket == nullptr) {
 		danMuQWebsocket = NewObject<UBWebsocket>(this);
+		danMuQWebsocket->AddToRoot();
 	}
 	danMuQWebsocket->init(apiInfo, WebSocketError, WebSocketMessage);
 }
@@ -46,9 +47,11 @@ void UBSdk::WebSocketMessage(std::string message)
 {
 	nlohmann::json jsonData = nlohmann::json::parse(message);
 	std::string cmd = jsonData["cmd"].get<std::string>();
-	UE_LOG(LogTemp, Log, TEXT("%s"), *message.c_str());
 	if (cmd.find("LIVE_OPEN_PLATFORM_DM") != std::string::npos) {
 		GetInstancePtr()->danmaData.setValue(jsonData["data"]);
+		FString uname = FString(UTF8_TO_TCHAR(jsonData["data"]["uname"].get<std::string>().c_str()));
+		FString msg = FString(UTF8_TO_TCHAR(jsonData["data"]["msg"].get<std::string>().c_str()));
+		UE_LOG(LogTemp, Log, TEXT("弹幕发送者：%s, 弹幕内容：%s"), *uname, *msg);
 		//emit ReceivedDanmaKu(this->danmaData);
 	} else if (cmd.find("LIVE_OPEN_PLATFORM_SEND_GIFT") != std::string::npos) {
 		GetInstancePtr()->giftData.setValue(jsonData["data"]);

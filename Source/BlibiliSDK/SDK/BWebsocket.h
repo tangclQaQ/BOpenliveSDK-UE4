@@ -24,8 +24,8 @@ public:
 	~UBWebsocket();
 
 	void init(const ApiInfo& apiInfo, CALLBACKERROR CallbackError, CALLBACKMESSAGE CallbackMessage);
-	void getBytesByInt(danmakuByte* buffer, int value);
-	void getBytesByShort(danmakuByte* buffer, short value);
+	void getBytesByInt(TArray<unsigned char> &buffer, int value);
+	void getBytesByShort(TArray<unsigned char> &buffer, short value);
 	int toInt(danmakuByte* buffer, int index);
 	int toShort(danmakuByte* buffer, int index);
 	void heartBeat();

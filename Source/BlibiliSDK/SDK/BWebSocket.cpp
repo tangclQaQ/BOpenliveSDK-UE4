@@ -11,8 +11,6 @@ UBWebsocket::UBWebsocket(){
 
 UBWebsocket::~UBWebsocket()
 {
-	UE_LOG(LogTemp, Log, TEXT("~UBWebsocket is call"));
-	Socket->Close();
 }
 
 void UBWebsocket::init(const ApiInfo& apiInfo, CALLBACKERROR CallbackError, CALLBACKMESSAGE CallbackMessage)
@@ -60,9 +58,6 @@ void UBWebsocket::init(const ApiInfo& apiInfo, CALLBACKERROR CallbackError, CALL
 		//最后生成房间包，并将包发送给服务器
 		std::string roomPack = ss.str();
 		FString rooPackStr(roomPack.c_str());
-		std::cout << "1111111111111111111:" << roomPack;
-		UE_LOG(LogTemp, Log, TEXT("auth count is:%d"), roomPack.size());
-		UE_LOG(LogTemp, Log, TEXT("auth1 count is:%d"), rooPackStr.Len());
 
 		// 此处的'\0'不能包括进去
 		if (!Socket->IsConnected())
@@ -76,6 +71,7 @@ void UBWebsocket::init(const ApiInfo& apiInfo, CALLBACKERROR CallbackError, CALL
 		UWorld* world = GEngine->GameViewport->GetWorld();
 		if (world == nullptr) {
 			UE_LOG(LogTemp, Log, TEXT("UWorld is null"));
+			return;
 		}
 		world->GetTimerManager().SetTimer(m_beatTimer, this, &UBWebsocket::heartBeat, 29, true);
 		});
@@ -89,9 +85,15 @@ void UBWebsocket::init(const ApiInfo& apiInfo, CALLBACKERROR CallbackError, CALL
 		Socket->OnClosed().AddLambda([=](int32 StatusCode, const FString& Reason, bool bWasClean) -> void {
 			// This code will run when the connection to the server has been terminated.
 			// Because of an error or a call to Socket->Close().
-			// 断开连接了，那么就关闭websocket，并发送连接已经断开的信号
+			// 断开连接了，那么就关闭websocket，并发送连接已经断开的信号,关闭心跳定时器
 			UE_LOG(LogTemp, Log, TEXT("WebSocket is closed, Reason is %s"), *Reason);
 			this->Socket->Close();
+			CallbackError(ERROR_WEBSOCKET_DISCONNECT);
+			UWorld* WorldPtr = GEngine->GameViewport->GetWorld();
+			if(WorldPtr != nullptr)
+			{
+				GetWorld()->GetTimerManager().ClearTimer(m_beatTimer);
+			}
 			});
 
 		Socket->OnRawMessage().AddLambda([=](const void* Message/* Data */, SIZE_T Size/* Size */, SIZE_T BytesRemaining) -> void {
@@ -169,14 +171,10 @@ void UBWebsocket::init(const ApiInfo& apiInfo, CALLBACKERROR CallbackError, CALL
 
 void UBWebsocket::getBytesByInt(TArray<unsigned char> &buffer, int value)
 {
-	unsigned char aaa = (unsigned char)(value >> 24);
-	unsigned char bbb = (unsigned char)(value >> 16);
-	unsigned char ccc = (unsigned char)(value >> 8);
-	unsigned char ddd = (unsigned char)value;
-	buffer[0] = aaa;
-	buffer[1] = bbb;
-	buffer[2] = ccc;
-	buffer[3] = ddd;
+	buffer[0] = (unsigned char)(value >> 24);
+	buffer[1] = (unsigned char)(value >> 16);
+	buffer[2] = (unsigned char)(value >> 8);
+	buffer[3] = (unsigned char)value;
 }
 
 void UBWebsocket::getBytesByShort(TArray<unsigned char> &buffer, short value)
@@ -185,12 +183,12 @@ void UBWebsocket::getBytesByShort(TArray<unsigned char> &buffer, short value)
 	buffer[1] = (unsigned char)value;
 }
 
-int UBWebsocket::toInt(danmakuByte* buffer, int index)
+int UBWebsocket::toInt(unsigned char* buffer, int index)
 {
 	return (((int)buffer[index] << 24) | ((int)buffer[index + 1] << 16) | ((int)buffer[index + 2] << 8) | (int)buffer[index + 3]);
 }
 
-int UBWebsocket::toShort(danmakuByte* buffer, int index)
+int UBWebsocket::toShort(unsigned char* buffer, int index)
 {
 	return ((int)buffer[index] << 8) | (int)buffer[index + 1];
 }
@@ -207,11 +205,15 @@ void UBWebsocket::heartBeat()
 	// 只有websocket还处于正常连接状态下才能发送心跳包
 	if (this->Socket != nullptr && this->Socket->IsConnected())
 	{
-		UE_LOG(LogTemp, Log, TEXT("11111111111111111111111"));
 		this->Socket->Send(heartBeatData, sizeof(heartBeatData), true);
 	}
 	else
 	{
-		UE_LOG(LogTemp, Log, TEXT("2222222222222222"));
+		UE_LOG(LogTemp, Log, TEXT("websocket异常"));
 	}
+}
+
+bool UBWebsocket::getIsConnected()
+{
+	return Socket->IsConnected();
 }

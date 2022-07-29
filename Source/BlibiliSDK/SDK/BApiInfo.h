@@ -37,12 +37,12 @@ struct DanmaData
 	int64_t room_id;                // 弹幕接收的直播间
 	int64_t guard_level;            // 对应房间大航海等级
 	int64_t fans_medal_level;       // 对应房间勋章信息
-	std::string msg_id;             // 消息唯一id
+	FString msg_id;             // 消息唯一id
 	bool fans_medal_wearing_status; // 当前佩戴的粉丝勋章佩戴状态
-	std::string uname;              // 用户昵称
-	std::string uface;              // 用户头像
-	std::string msg;                // 弹幕内容
-	std::string fans_medal_name;    // 粉丝勋章名
+	FString uname;              // 用户昵称
+	FString uface;              // 用户头像
+	FString msg;                // 弹幕内容
+	FString fans_medal_name;    // 粉丝勋章名
 
 	explicit DanmaData(const nlohmann::json& jsonData);
 	DanmaData() = default;
@@ -52,8 +52,8 @@ struct DanmaData
 struct UserInfo
 {
 	int64_t uid;       // 收礼主播uid
-	std::string uname; // 收礼主播昵称
-	std::string uface; // 收礼主播头像
+	FString uname; // 收礼主播昵称
+	FString uface; // 收礼主播头像
 };
 
 // 礼物
@@ -69,11 +69,11 @@ struct GiftData
 	int64_t timestamp;              // 收礼时间秒级时间戳
 	bool paid;                      // 是否是付费道具
 	bool fans_medal_wearing_status; // 当前佩戴的粉丝勋章佩戴状态
-	std::string uname;              //送礼用户昵称
-	std::string uface;              // 送礼用户头像
-	std::string gift_name;          // 道具名(盲盒:爆出道具名)
-	std::string fans_medal_name;    //粉丝勋章名
-	std::string msg_id;             // 消息唯一id
+	FString uname;              //送礼用户昵称
+	FString uface;              // 送礼用户头像
+	FString gift_name;          // 道具名(盲盒:爆出道具名)
+	FString fans_medal_name;    //粉丝勋章名
+	FString msg_id;             // 消息唯一id
 	UserInfo anchor_info;           // 主播信息
 
 	explicit GiftData(const nlohmann::json& jsonData);
@@ -90,9 +90,9 @@ struct GuardBuyData
 	int64_t room_id;                // 房间号
 	int64_t timestamp;              // 上舰时间秒级时间戳
 	bool fans_medal_wearing_status; // 佩戴的粉丝勋章佩戴状态
-	std::string guard_unit;         // 大航海单位
-	std::string fans_medal_name;    // 粉丝勋章名
-	std::string msg_id;             // 消息唯一id
+	FString guard_unit;         // 大航海单位
+	FString fans_medal_name;    // 粉丝勋章名
+	FString msg_id;             // 消息唯一id
 	UserInfo user_info;             // 用户信息
 	explicit GuardBuyData(const nlohmann::json& jsonData);
 	GuardBuyData() = default;
@@ -112,11 +112,11 @@ struct SuperChatData
 	int64_t guard_level;            // 对应房间大航海等级
 	int64_t fans_medal_level;       // 对应房间勋章信息
 	bool fans_medal_wearing_status; // 当前佩戴的粉丝勋章佩戴状态
-	std::string uname;              // 购买的用户昵称
-	std::string uface;              // 购买用户头像
-	std::string message;            // 留言内容
-	std::string fans_medal_name;    // 对应房间勋章名字
-	std::string msg_id;             // 消息唯一id
+	FString uname;              // 购买的用户昵称
+	FString uface;              // 购买用户头像
+	FString message;            // 留言内容
+	FString fans_medal_name;    // 对应房间勋章名字
+	FString msg_id;             // 消息唯一id
 
 	explicit SuperChatData(const nlohmann::json& jsonData);
 	SuperChatData() = default;
@@ -126,7 +126,7 @@ struct SuperChatData
 struct SuperChatDelData
 {
 	int64_t room_id;                  // 直播间id
-	std::string msg_id;               // 留言id
+	FString msg_id;               // 留言id
 	std::vector<int64_t> message_ids; // 消息唯一id
 
 	explicit SuperChatDelData(const nlohmann::json& jsonData);
@@ -136,5 +136,6 @@ struct SuperChatDelData
 
 enum EErrorString {
 	ERROR_DATA_INVAILD,				//无效数据
-	ERROR_WEBSOCKET_CONNECT,		//websocket连接异常
+	ERROR_WEBSOCKET_CONNECT,		//websocket连接时出现异常
+	ERROR_WEBSOCKET_DISCONNECT,		//websocket断线
 };

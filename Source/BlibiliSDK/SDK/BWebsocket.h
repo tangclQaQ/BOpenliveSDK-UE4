@@ -10,7 +10,6 @@
 #include "BWebsocket.generated.h"
 
 #define UNZIP_BUFF_SIZE 65536
-typedef unsigned char danmakuByte;
 typedef void(*CALLBACKERROR)(EErrorString);
 typedef void(*CALLBACKMESSAGE)(std::string);
 
@@ -26,14 +25,15 @@ public:
 	void init(const ApiInfo& apiInfo, CALLBACKERROR CallbackError, CALLBACKMESSAGE CallbackMessage);
 	void getBytesByInt(TArray<unsigned char> &buffer, int value);
 	void getBytesByShort(TArray<unsigned char> &buffer, short value);
-	int toInt(danmakuByte* buffer, int index);
-	int toShort(danmakuByte* buffer, int index);
+	int toInt(unsigned char* buffer, int index);
+	int toShort(unsigned char* buffer, int index);
 	void heartBeat();
+	bool getIsConnected();
 
 private:
 	TSharedPtr<IWebSocket> Socket;
 	ApiInfo m_apiInfo;
 	FTimerHandle m_beatTimer;
-	danmakuByte unzipBuffer[UNZIP_BUFF_SIZE];
+	unsigned char unzipBuffer[UNZIP_BUFF_SIZE];
 };
 

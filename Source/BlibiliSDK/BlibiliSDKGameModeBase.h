@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "BSdk.h"
 #include "GameFramework/GameModeBase.h"
-#include "SDK/BSdk.h"
 #include "BlibiliSDKGameModeBase.generated.h"
 
 /**

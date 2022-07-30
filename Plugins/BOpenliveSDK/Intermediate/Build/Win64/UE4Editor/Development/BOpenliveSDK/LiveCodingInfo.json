@@ -1,0 +1,20 @@
+{
+	"RemapUnityFiles": 
+	{
+		"Module.BOpenliveSDK.cpp.obj": [
+			"BApi.cpp.obj",
+			"BApiInfo.cpp.obj",
+			"BOpenliveSDK.cpp.obj",
+			"BOpenliveSDKBPLibrary.cpp.obj",
+			"BSdk.cpp.obj",
+			"BWebSocket.cpp.obj",
+			"Sha256.cpp.obj"
+		],
+		"Module.BOpenliveSDK.gen.cpp.obj": [
+			"BOpenliveSDK.init.gen.cpp.obj",
+			"BOpenliveSDKBPLibrary.gen.cpp.obj",
+			"BSdk.gen.cpp.obj",
+			"BWebsocket.gen.cpp.obj"
+		]
+	}
+}

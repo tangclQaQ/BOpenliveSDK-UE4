@@ -8,7 +8,7 @@ public class BlibiliSDK : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "WebSockets", "Json", "zlib", "HTTP" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "BOpenliveSDK" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 

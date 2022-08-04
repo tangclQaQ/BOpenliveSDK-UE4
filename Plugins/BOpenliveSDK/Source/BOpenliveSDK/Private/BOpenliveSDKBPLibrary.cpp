@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+Ôªø// Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "BOpenliveSDKBPLibrary.h"
 #include "BOpenliveSDK.h"
@@ -10,7 +10,6 @@ UBOpenliveSDKBPLibrary::UBOpenliveSDKBPLibrary(const FObjectInitializer& ObjectI
 
 }
 
-
 UBOpenliveSDKBPLibrary* UBOpenliveSDKBPLibrary::GetInstancePtr()
 {
 	if (s_UBSdk == nullptr)
@@ -21,14 +20,13 @@ UBOpenliveSDKBPLibrary* UBOpenliveSDKBPLibrary::GetInstancePtr()
 	return s_UBSdk;
 }
 
-void UBOpenliveSDKBPLibrary::init(const std::string& accessKeyId, const std::string& accessKeySecret, const std::string& appId,
-                 const std::string& code)
+void UBOpenliveSDKBPLibrary::init(FString accessKeyId, FString accessKeySecret, FString appId, FString code)
 {
-	m_accessKeyId = accessKeyId;
-	m_accessKeySecret = accessKeySecret;
-	m_appId = appId;
-	m_code = code;
-	bapi = new BApi(accessKeyId, accessKeySecret);
+	m_accessKeyId = TCHAR_TO_UTF8(*accessKeyId);
+	m_accessKeySecret = TCHAR_TO_UTF8(*accessKeySecret);
+	m_appId = TCHAR_TO_UTF8(*appId);
+	m_code = TCHAR_TO_UTF8(*code);
+	bapi = new BApi(m_accessKeyId, m_accessKeySecret);
 }
 
 void UBOpenliveSDKBPLibrary::CreateWebsocket()
@@ -52,28 +50,25 @@ void UBOpenliveSDKBPLibrary::WebSocketMessage(std::string message)
 		nlohmann::json jsonData = nlohmann::json::parse(message);
 		std::string cmd = jsonData["cmd"].get<std::string>();
 		if (cmd.find("LIVE_OPEN_PLATFORM_DM") != std::string::npos) {
-			GetInstancePtr()->danmaData.setValue(jsonData["data"]);
-			FString uname = GetInstancePtr()->danmaData.uname;
-			FString msg = GetInstancePtr()->danmaData.msg;
-			UE_LOG(LogTemp, Log, TEXT("µØƒª∑¢ÀÕ’ﬂ£∫%s, µØƒªƒ⁄»›£∫%s"), *uname, *msg);
-			//emit ReceivedDanmaKu(this->danmaData);
+			GetInstancePtr()->danmuData.setValue(jsonData["data"]);
+			GetInstancePtr()->ReceiveDanmuEvent.Broadcast(GetInstancePtr()->danmuData);
 		} else if (cmd.find("LIVE_OPEN_PLATFORM_SEND_GIFT") != std::string::npos) {
 			GetInstancePtr()->giftData.setValue(jsonData["data"]);
-			//emit ReceivedGift(this->giftData);
+			GetInstancePtr()->FReceiveGiftEvent.Broadcast(GetInstancePtr()->giftData);
 		} else if (cmd.find("LIVE_OPEN_PLATFORM_SUPER_CHAT") != std::string::npos) {
 			GetInstancePtr()->superChatData.setValue(jsonData["data"]);
-			//emit ReceivedSuperChat(this->superChatData);
+			GetInstancePtr()->FReceiveSuperChatDataEvent.Broadcast(GetInstancePtr()->superChatData);
 		} else if (cmd.find("LIVE_OPEN_PLATFORM_SUPER_CHAT_DEL") != std::string::npos) {
 			GetInstancePtr()->superChatDelData.setValue(jsonData["data"]);
-			//emit ReceivedSuperChatDel(this->superChatDelData);
+			//Â•ΩÂÉèÊ≤°‰ªÄ‰πàÁî®ÔºåÊöÇÊó∂‰∏çÂèë‰∫ã‰ª∂
 		} else if (cmd.find("LIVE_OPEN_PLATFORM_GUARD") != std::string::npos) {
 			GetInstancePtr()->guardBuyData.setValue(jsonData["data"]);
-			//emit ReceivedGuardBuy(this->guardBuyData);
+			GetInstancePtr()->FReceiveGuardBuyEvent.Broadcast(GetInstancePtr()->guardBuyData);
 		}
 	}
 	catch (nlohmann::detail::exception& e)
 	{
-		UE_LOG(LogTemp, Log, TEXT("json ˝æ›“Ï≥££¨¥ÌŒÛ¬Î£∫%d"), e.id);
+		UE_LOG(LogTemp, Log, TEXT("jsonÊï∞ÊçÆÂºÇÂ∏∏ÔºåÈîôËØØÁ†ÅÔºö%d"), e.id);
 	}
 }
 
@@ -82,11 +77,51 @@ void UBOpenliveSDKBPLibrary::Start()
 	bapi->StartInteractivePlay(m_code, m_appId, OnStartInteractivePlay);
 }
 
-void UBOpenliveSDKBPLibrary::OnStartInteractivePlay(bool isSuccess, const std::string &message)
+void UBOpenliveSDKBPLibrary::Stop()
+{
+	if(GEngine != nullptr && GEngine->GameViewport != nullptr) {
+		UWorld* world = GEngine->GameViewport->GetWorld();
+		if(world != nullptr)
+		{
+			world->GetTimerManager().ClearTimer(m_beatTimer);
+		}
+	}
+	bapi->EndInteractivePlay(m_appId, apiInfo.gameId, OnEndInteractivePlay);
+}
+
+void UBOpenliveSDKBPLibrary::OnEndInteractivePlay(bool isSuccess, const std::string& message)
 {
 	if(isSuccess == false)
 	{
 		//TODO:notify error
+		return;
+	}
+	FString messageStr(UTF8_TO_TCHAR(message.c_str()));
+	UE_LOG(LogTemp, Log, TEXT("message is %s"), *messageStr);
+	try
+	{
+		nlohmann::json jsonData = nlohmann::json::parse(message);
+		if (jsonData.find("code") != jsonData.end()) {
+			if (jsonData["code"].get<int64_t>() == 0) {
+				UE_LOG(LogTemp, Log, TEXT("ËØ∑Ê±ÇÁªìÊùüÊàêÂäü"));
+			} else {
+				UE_LOG(LogTemp, Log, TEXT("ËØ∑Ê±ÇÁªìÊùüÂ§±Ë¥•"));
+			}
+		} else {
+			UE_LOG(LogTemp, Log, TEXT("ËØ∑Ê±ÇÈîôËØØ"));
+		}
+	}
+	catch (nlohmann::detail::exception& e)
+	{
+		UE_LOG(LogTemp, Log, TEXT("jsonÊï∞ÊçÆÂºÇÂ∏∏ÔºåÈîôËØØÁ†ÅÔºö%d"), e.id);
+	}
+}
+
+void UBOpenliveSDKBPLibrary::OnStartInteractivePlay(bool isSuccess, const std::string &message)
+{
+	if(isSuccess == false)
+	{
+		GetInstancePtr()->FStartErrorEvent.Broadcast(1, "ÁΩëÁªúÂºÇÂ∏∏");
 		return;
 	}
 	try
@@ -96,35 +131,37 @@ void UBOpenliveSDKBPLibrary::OnStartInteractivePlay(bool isSuccess, const std::s
 		FString messageStr(UTF8_TO_TCHAR(message.c_str()));
 		UE_LOG(LogTemp, Log, TEXT("message is %s"), *messageStr);
 		int64_t code = jsonData["code"].get<int64_t>();
+		FString msg(UTF8_TO_TCHAR(jsonData["message"].get<std::string>().c_str()));
 		if (code != 0) {
-			//TODO:notify error
+			GetInstancePtr()->FStartErrorEvent.Broadcast(code, msg);
 			return;
 		}
 		UWorld* world = GEngine->GameViewport->GetWorld();
 		if (world == nullptr) {
 			UE_LOG(LogTemp, Log, TEXT("UWorld is null"));
 		}
-		world->GetTimerManager().SetTimer(GetInstancePtr()->m_beatTimer, GetInstancePtr(), &UBOpenliveSDKBPLibrary::timerEvent, 1, true); // µÙœﬂºÏ≤‚∫Õ∑¢ÀÕ–ƒÃ¯∞¸
+		world->GetTimerManager().SetTimer(GetInstancePtr()->m_beatTimer, GetInstancePtr(), &UBOpenliveSDKBPLibrary::timerEvent, 1, true); // ÊéâÁ∫øÊ£ÄÊµãÂíåÂèëÈÄÅÂøÉË∑≥ÂåÖ
 		GetInstancePtr()->apiInfo.setValue(jsonData["data"]);
 		GetInstancePtr()->CreateWebsocket();
 	}
 	catch (nlohmann::detail::exception& e)
 	{
-		UE_LOG(LogTemp, Log, TEXT("json ˝æ›“Ï≥££¨¥ÌŒÛ¬Î£∫%d"), e.id);
+		GetInstancePtr()->FStartErrorEvent.Broadcast(2, "jsonÊï∞ÊçÆÂºÇÂ∏∏");
+		UE_LOG(LogTemp, Log, TEXT("jsonÊï∞ÊçÆÂºÇÂ∏∏ÔºåÈîôËØØÁ†ÅÔºö%d"), e.id);
 	}
 }
 
 void UBOpenliveSDKBPLibrary::timerEvent()
 {
 	static int count = 0;
-	// ’‚¿Ô π”√µƒ «19√Î∑¢“ª¥Œ–ƒÃ¯∞¸
+	// ËøôÈáå‰ΩøÁî®ÁöÑÊòØ19ÁßíÂèë‰∏ÄÊ¨°ÂøÉË∑≥ÂåÖ
 	if (count >= 19) {
 		bapi->HeartBeatInteractivePlay(apiInfo.gameId, &UBOpenliveSDKBPLibrary::OnTimerEvent);
 		count = 0;
 	} else {
 		++count;
 	}
-	// √ø√Î∂ºª·≈–∂œwebsocket «∑Ò∂œø™¡À£¨∂œø™µƒª∞æÕ÷ÿ¡¨
+	// ÊØèÁßíÈÉΩ‰ºöÂà§Êñ≠websocketÊòØÂê¶Êñ≠ÂºÄ‰∫ÜÔºåÊñ≠ÂºÄÁöÑËØùÂ∞±ÈáçËøû
 	if (!danMuQWebsocket->getIsConnected()) {
 		UE_LOG(LogTemp, Log, TEXT("websocket re connect"));
 		CreateWebsocket();
@@ -140,27 +177,21 @@ void UBOpenliveSDKBPLibrary::OnTimerEvent(bool isSuccess, const std::string & re
 			nlohmann::json jsonData = nlohmann::json::parse(response);
 			if (jsonData.find("code") != jsonData.end()) {
 				if (jsonData["code"].get<int64_t>() == 0) {
-					UE_LOG(LogTemp, Log, TEXT("∑¢ÀÕ–ƒÃ¯∞¸œÏ”¶≥…π¶"));
+					UE_LOG(LogTemp, Log, TEXT("ÂèëÈÄÅÂøÉË∑≥ÂåÖÂìçÂ∫îÊàêÂäü„ÄÇ"));
 				} else {
-					UE_LOG(LogTemp, Log, TEXT("∑¢ÀÕ–ƒÃ¯∞¸œÏ”¶ ß∞‹£¨”–ø…ƒ‹ «≥¨ ±¡À"));
-					// ’‚—˘÷±Ω””√Œ“ªπ√ª≤‚ ‘π˝£¨ø…ƒ‹ª·”–bug
-					GetInstancePtr()->Start();
+					UE_LOG(LogTemp, Log, TEXT("ÂèëÈÄÅÂøÉË∑≥ÂåÖÂìçÂ∫îÂ§±Ë¥•ÔºåÊúâÂèØËÉΩÊòØË∂ÖÊó∂‰∫Ü"));
 				}
 			} else {
-				UE_LOG(LogTemp, Log, TEXT(""));
+				UE_LOG(LogTemp, Log, TEXT("ÂèëÈÄÅÂøÉË∑≥ÂåÖÂ§±Ë¥•1„ÄÇ"));
 			}
 		}
 		catch (nlohmann::detail::exception& e)
 		{
-			UE_LOG(LogTemp, Log, TEXT("json ˝æ›“Ï≥££¨¥ÌŒÛ¬Î£∫%d"), e.id);
+			UE_LOG(LogTemp, Log, TEXT("jsonÊï∞ÊçÆÂºÇÂ∏∏ÔºåÈîôËØØÁ†ÅÔºö%d"), e.id);
 		}
 	}
 	else
 	{
-		UE_LOG(LogTemp, Log, TEXT("∑¢ÀÕ–ƒÃ¯∞¸ ß∞‹"));
-		GetInstancePtr()->Start();
+		UE_LOG(LogTemp, Log, TEXT("ÂèëÈÄÅÂøÉË∑≥ÂåÖÂ§±Ë¥•2„ÄÇ"));
 	}
 }
-
-
-

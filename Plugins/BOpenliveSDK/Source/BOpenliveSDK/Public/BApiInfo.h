@@ -1,11 +1,16 @@
 #pragma once
 
+#include <CoreMinimal.h>
 #include <string>
 #include <vector>
 #include "BOpenliveSDK/Private/Tool/json.hpp"
 #include <stdint.h>
 
-//ÈÏÖ¤ËùĞèµÄĞÅÏ¢
+#include "Engine/DataTable.h"
+
+#include <BApiInfo.generated.h>
+
+//è®¤è¯æ‰€éœ€çš„ä¿¡æ¯
 struct AuthInfo
 {
 	std::string accessKeyId;
@@ -16,118 +21,196 @@ struct AuthInfo
 
 struct ApiInfo
 {
-	int64_t roomId;                   // ·¿¼äid
-	int64_t uid;                      // Ö÷²¥uid
-	std::string uface;                // Ö÷²¥Í·Ïñ
-	std::string uname;                // Ö÷²¥Ãû³Æ
-	std::string gameId;               // ÓÎÏ·id
-	std::string authBody;             // ÑéÖ¤ÓÃµÄ
-	std::vector<std::string> wssLink; // wss¿ÉÓÃµÄµØÖ·
+	int64_t roomId;                   // æˆ¿é—´id
+	int64_t uid;                      // ä¸»æ’­uid
+	std::string uface;                // ä¸»æ’­å¤´åƒ
+	std::string uname;                // ä¸»æ’­åç§°
+	std::string gameId;               // æ¸¸æˆid
+	std::string authBody;             // éªŒè¯ç”¨çš„
+	std::vector<std::string> wssLink; // wsså¯ç”¨çš„åœ°å€
 
 	explicit ApiInfo(const nlohmann::json& jsonData);
 	ApiInfo() = default;
 	void setValue(const nlohmann::json& jsonData);
 };
 
-// µ¯Ä»ÏûÏ¢
-struct DanmaData
+// å¼¹å¹•æ¶ˆæ¯
+USTRUCT(BlueprintType)
+struct BOPENLIVESDK_API FDanmuData : public FTableRowBase
 {
-	int64_t uid;                    // ÓÃ»§UID
-	int64_t timestamp;              // µ¯Ä»·¢ËÍÊ±¼äÃë¼¶Ê±¼ä´Á
-	int64_t room_id;                // µ¯Ä»½ÓÊÕµÄÖ±²¥¼ä
-	int64_t guard_level;            // ¶ÔÓ¦·¿¼ä´óº½º£µÈ¼¶
-	int64_t fans_medal_level;       // ¶ÔÓ¦·¿¼äÑ«ÕÂĞÅÏ¢
-	FString msg_id;             // ÏûÏ¢Î¨Ò»id
-	bool fans_medal_wearing_status; // µ±Ç°Åå´÷µÄ·ÛË¿Ñ«ÕÂÅå´÷×´Ì¬
-	FString uname;              // ÓÃ»§êÇ³Æ
-	FString uface;              // ÓÃ»§Í·Ïñ
-	FString msg;                // µ¯Ä»ÄÚÈİ
-	FString fans_medal_name;    // ·ÛË¿Ñ«ÕÂÃû
+	GENERATED_BODY()
 
-	explicit DanmaData(const nlohmann::json& jsonData);
-	DanmaData() = default;
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	int64 uid;                    // ç”¨æˆ·UID
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	int64 timestamp;              // å¼¹å¹•å‘é€æ—¶é—´ç§’çº§æ—¶é—´æˆ³
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	int64 room_id;                // å¼¹å¹•æ¥æ”¶çš„ç›´æ’­é—´
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	int64 guard_level;            // å¯¹åº”æˆ¿é—´å¤§èˆªæµ·ç­‰çº§
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	int64 fans_medal_level;       // å¯¹åº”æˆ¿é—´å‹‹ç« ä¿¡æ¯
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	FString msg_id;             // æ¶ˆæ¯å”¯ä¸€id
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	bool fans_medal_wearing_status; // å½“å‰ä½©æˆ´çš„ç²‰ä¸å‹‹ç« ä½©æˆ´çŠ¶æ€
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	FString uname;              // ç”¨æˆ·æ˜µç§°
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	FString uface;              // ç”¨æˆ·å¤´åƒ
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	FString msg;                // å¼¹å¹•å†…å®¹
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	FString fans_medal_name;    // ç²‰ä¸å‹‹ç« å
+
+	explicit FDanmuData(const nlohmann::json& jsonData);
+	FDanmuData() = default;
 	void setValue(const nlohmann::json& jsonData);
 };
 
-struct UserInfo
+USTRUCT(BlueprintType)
+struct FUserInfo
 {
-	int64_t uid;       // ÊÕÀñÖ÷²¥uid
-	FString uname; // ÊÕÀñÖ÷²¥êÇ³Æ
-	FString uface; // ÊÕÀñÖ÷²¥Í·Ïñ
+	GENERATED_BODY()
+	
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	int64 uid;       // æ”¶ç¤¼ä¸»æ’­uid
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	FString uname; // æ”¶ç¤¼ä¸»æ’­æ˜µç§°
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	FString uface; // æ”¶ç¤¼ä¸»æ’­å¤´åƒ
+
+	FUserInfo() = default;
 };
 
-// ÀñÎï
-struct GiftData
+// ç¤¼ç‰©
+USTRUCT(BlueprintType)
+struct FGiftData
 {
-	int64_t room_id;                // ·¿¼äºÅ
-	int64_t uid;                    // ËÍÀñÓÃ»§UID
-	int64_t gift_id;                // µÀ¾ßid(Ã¤ºĞ:±¬³öµÀ¾ßid)
-	int64_t gift_num;               // ÔùËÍµÀ¾ßÊıÁ¿
-	int64_t price;                  // Ö§¸¶½ğ¶î(1000 = 1Ôª = 10µç³Ø),Ã¤ºĞ:±¬³öµÀ¾ßµÄ¼ÛÖµ
-	int64_t fans_medal_level;       // Êµ¼ÊËÍÀñÈËµÄÑ«ÕÂĞÅÏ¢
-	int64_t guard_level;            // ´óº½º£µÈ¼¶
-	int64_t timestamp;              // ÊÕÀñÊ±¼äÃë¼¶Ê±¼ä´Á
-	bool paid;                      // ÊÇ·ñÊÇ¸¶·ÑµÀ¾ß
-	bool fans_medal_wearing_status; // µ±Ç°Åå´÷µÄ·ÛË¿Ñ«ÕÂÅå´÷×´Ì¬
-	FString uname;              //ËÍÀñÓÃ»§êÇ³Æ
-	FString uface;              // ËÍÀñÓÃ»§Í·Ïñ
-	FString gift_name;          // µÀ¾ßÃû(Ã¤ºĞ:±¬³öµÀ¾ßÃû)
-	FString fans_medal_name;    //·ÛË¿Ñ«ÕÂÃû
-	FString msg_id;             // ÏûÏ¢Î¨Ò»id
-	UserInfo anchor_info;           // Ö÷²¥ĞÅÏ¢
+	GENERATED_BODY()
 
-	explicit GiftData(const nlohmann::json& jsonData);
-	GiftData() = default;
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	int64 room_id;                // æˆ¿é—´å·
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	int64 uid;                    // é€ç¤¼ç”¨æˆ·UID
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	int64 gift_id;                // é“å…·id(ç›²ç›’:çˆ†å‡ºé“å…·id)
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	int64 gift_num;               // èµ é€é“å…·æ•°é‡
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	int64 price;                  // æ”¯ä»˜é‡‘é¢(1000 = 1å…ƒ = 10ç”µæ± ),ç›²ç›’:çˆ†å‡ºé“å…·çš„ä»·å€¼
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	int64 fans_medal_level;       // å®é™…é€ç¤¼äººçš„å‹‹ç« ä¿¡æ¯
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	int64 guard_level;            // å¤§èˆªæµ·ç­‰çº§
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	int64 timestamp;              // æ”¶ç¤¼æ—¶é—´ç§’çº§æ—¶é—´æˆ³
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	bool paid;                      // æ˜¯å¦æ˜¯ä»˜è´¹é“å…·
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	bool fans_medal_wearing_status; // å½“å‰ä½©æˆ´çš„ç²‰ä¸å‹‹ç« ä½©æˆ´çŠ¶æ€
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	FString uname;              //é€ç¤¼ç”¨æˆ·æ˜µç§°
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	FString uface;              // é€ç¤¼ç”¨æˆ·å¤´åƒ
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	FString gift_name;          // é“å…·å(ç›²ç›’:çˆ†å‡ºé“å…·å)
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	FString fans_medal_name;    //ç²‰ä¸å‹‹ç« å
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	FString msg_id;             // æ¶ˆæ¯å”¯ä¸€id
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	FUserInfo anchor_info;           // ä¸»æ’­ä¿¡æ¯
+
+	explicit FGiftData(const nlohmann::json& jsonData);
+	FGiftData() = default;
 	void setValue(const nlohmann::json& jsonData);
 };
 
-// ´óº½º£
-struct GuardBuyData
+// å¤§èˆªæµ·
+USTRUCT(BlueprintType)
+struct FGuardBuyData
 {
-	int64_t guard_level;            // ´óº½º£µÈ¼¶
-	int64_t guard_num;              // ´óº½º£ÊıÁ¿
-	int64_t fans_medal_level;       // ·ÛË¿Ñ«ÕÂµÈ¼¶
-	int64_t room_id;                // ·¿¼äºÅ
-	int64_t timestamp;              // ÉÏ½¢Ê±¼äÃë¼¶Ê±¼ä´Á
-	bool fans_medal_wearing_status; // Åå´÷µÄ·ÛË¿Ñ«ÕÂÅå´÷×´Ì¬
-	FString guard_unit;         // ´óº½º£µ¥Î»
-	FString fans_medal_name;    // ·ÛË¿Ñ«ÕÂÃû
-	FString msg_id;             // ÏûÏ¢Î¨Ò»id
-	UserInfo user_info;             // ÓÃ»§ĞÅÏ¢
-	explicit GuardBuyData(const nlohmann::json& jsonData);
-	GuardBuyData() = default;
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	int64 guard_level;            // å¤§èˆªæµ·ç­‰çº§
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	int64 guard_num;              // å¤§èˆªæµ·æ•°é‡
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	int64 fans_medal_level;       // ç²‰ä¸å‹‹ç« ç­‰çº§
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	int64 room_id;                // æˆ¿é—´å·
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	int64 timestamp;              // ä¸Šèˆ°æ—¶é—´ç§’çº§æ—¶é—´æˆ³
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	bool fans_medal_wearing_status; // ä½©æˆ´çš„ç²‰ä¸å‹‹ç« ä½©æˆ´çŠ¶æ€
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	FString guard_unit;         // å¤§èˆªæµ·å•ä½
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	FString fans_medal_name;    // ç²‰ä¸å‹‹ç« å
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	FString msg_id;             // æ¶ˆæ¯å”¯ä¸€id
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	FUserInfo user_info;             // ç”¨æˆ·ä¿¡æ¯
+	
+	explicit FGuardBuyData(const nlohmann::json& jsonData);
+	FGuardBuyData() = default;
 	void setValue(const nlohmann::json& jsonData);
 };
 
-// ¸¶·ÑÁôÑÔ
-struct SuperChatData
+// ä»˜è´¹ç•™è¨€
+USTRUCT(BlueprintType)
+struct FSuperChatData
 {
-	int64_t room_id;                // Ö±²¥¼äid
-	int64_t uid;                    // ¹ºÂòÓÃ»§UID
-	int64_t message_id;             // ÁôÑÔid(·ç¿Ø³¡¾°ÏÂ³·»ØÁôÑÔĞèÒª)
-	int64_t rmb;                    // Ö§¸¶½ğ¶î(Ôª)
-	int64_t timestamp;              // ÔùËÍÊ±¼äÃë¼¶
-	int64_t start_time;             // ÉúĞ§¿ªÊ¼Ê±¼ä
-	int64_t end_time;               // ÉúĞ§½áÊøÊ±¼ä
-	int64_t guard_level;            // ¶ÔÓ¦·¿¼ä´óº½º£µÈ¼¶
-	int64_t fans_medal_level;       // ¶ÔÓ¦·¿¼äÑ«ÕÂĞÅÏ¢
-	bool fans_medal_wearing_status; // µ±Ç°Åå´÷µÄ·ÛË¿Ñ«ÕÂÅå´÷×´Ì¬
-	FString uname;              // ¹ºÂòµÄÓÃ»§êÇ³Æ
-	FString uface;              // ¹ºÂòÓÃ»§Í·Ïñ
-	FString message;            // ÁôÑÔÄÚÈİ
-	FString fans_medal_name;    // ¶ÔÓ¦·¿¼äÑ«ÕÂÃû×Ö
-	FString msg_id;             // ÏûÏ¢Î¨Ò»id
+	GENERATED_BODY()
 
-	explicit SuperChatData(const nlohmann::json& jsonData);
-	SuperChatData() = default;
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	int64 room_id;                // ç›´æ’­é—´id
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	int64 uid;                    // è´­ä¹°ç”¨æˆ·UID
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	int64 message_id;             // ç•™è¨€id(é£æ§åœºæ™¯ä¸‹æ’¤å›ç•™è¨€éœ€è¦)
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	int64 rmb;                    // æ”¯ä»˜é‡‘é¢(å…ƒ)
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	int64 timestamp;              // èµ é€æ—¶é—´ç§’çº§
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	int64 start_time;             // ç”Ÿæ•ˆå¼€å§‹æ—¶é—´
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	int64 end_time;               // ç”Ÿæ•ˆç»“æŸæ—¶é—´
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	int64 guard_level;            // å¯¹åº”æˆ¿é—´å¤§èˆªæµ·ç­‰çº§
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	int64 fans_medal_level;       // å¯¹åº”æˆ¿é—´å‹‹ç« ä¿¡æ¯
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	bool fans_medal_wearing_status; // å½“å‰ä½©æˆ´çš„ç²‰ä¸å‹‹ç« ä½©æˆ´çŠ¶æ€
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	FString uname;              // è´­ä¹°çš„ç”¨æˆ·æ˜µç§°
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	FString uface;              // è´­ä¹°ç”¨æˆ·å¤´åƒ
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	FString message;            // ç•™è¨€å†…å®¹
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	FString fans_medal_name;    // å¯¹åº”æˆ¿é—´å‹‹ç« åå­—
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	FString msg_id;             // æ¶ˆæ¯å”¯ä¸€id
+
+	explicit FSuperChatData(const nlohmann::json& jsonData);
+	FSuperChatData() = default;
 	void setValue(const nlohmann::json& jsonData);
 };
 
+//è¿‡æ—¶çš„ä»˜è´¹ç•™è¨€
 struct SuperChatDelData
 {
-	int64_t room_id;                  // Ö±²¥¼äid
-	FString msg_id;               // ÁôÑÔid
-	std::vector<int64_t> message_ids; // ÏûÏ¢Î¨Ò»id
+
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	int64 room_id;                  // ç›´æ’­é—´id
+	UPROPERTY(EditAnywhere,BlueprintReadOnly)
+	FString msg_id;               // ç•™è¨€id
+	
+	std::vector<int64_t> message_ids; // æ¶ˆæ¯å”¯ä¸€id
 
 	explicit SuperChatDelData(const nlohmann::json& jsonData);
 	SuperChatDelData() = default;
@@ -135,7 +218,7 @@ struct SuperChatDelData
 };
 
 enum EErrorString {
-	ERROR_DATA_INVAILD,				//ÎŞĞ§Êı¾İ
-	ERROR_WEBSOCKET_CONNECT,		//websocketÁ¬½ÓÊ±³öÏÖÒì³£
-	ERROR_WEBSOCKET_DISCONNECT,		//websocket¶ÏÏß
+	ERROR_DATA_INVAILD,				//æ— æ•ˆæ•°æ®
+	ERROR_WEBSOCKET_CONNECT,		//websocketè¿æ¥æ—¶å‡ºç°å¼‚å¸¸
+	ERROR_WEBSOCKET_DISCONNECT,		//websocketæ–­çº¿
 };

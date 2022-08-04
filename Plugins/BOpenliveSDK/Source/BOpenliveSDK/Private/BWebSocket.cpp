@@ -4,7 +4,7 @@
 #include "Chaos/AABB.h"
 
 /*
- * ¶Ô½ÓBÕ¾WebSocket
+ * å¯¹æ¥Bç«™WebSocket
  */
 UBWebsocket::UBWebsocket(){
 }
@@ -20,60 +20,67 @@ void UBWebsocket::init(const ApiInfo& apiInfo, CALLBACKERROR CallbackError, CALL
 		CallbackError(ERROR_DATA_INVAILD);
 		return;
 	}
-	const FString ServerURL = apiInfo.wssLink[0].c_str(); // Ä¬ÈÏÊ¹ÓÃµÚÒ»Ìõurl
+	const FString ServerURL = apiInfo.wssLink[0].c_str(); // é»˜è®¤ä½¿ç”¨ç¬¬ä¸€æ¡url
 	const FString ServerProtocol = TEXT("ws");              // The WebServer protocol you want to use.
 	Socket = FWebSocketsModule::Get().CreateWebSocket(ServerURL, ServerProtocol);
 
 	// We bind all available events
-	Socket->OnConnected().AddLambda([&]() -> void {
-		// This code will run once connected.
-		std::stringstream ss;
-		//unsigned char buffer[4] = {};
-		TArray<unsigned char> buffer;
-		buffer.Init(0, 4);
-
-		//Ğ´ÈëÑéÖ¤×Ö·û´®³¤¶È
-		getBytesByInt(buffer, (int)(m_apiInfo.authBody.length() + 16));
-
-		ss << buffer[0] << buffer[1] << buffer[2] << buffer[3];
-		// 16ÊÇ±ØĞëµÄ£¬ËäÈ»²»ÖªµÀÎªÊ²Ã´
-		getBytesByShort(buffer, (short)16);
-		ss << buffer[0] << buffer[1];
-
-		//ÓĞÄÚ¹íËµÒÑ¾­ÓĞ protover = 3 ÁË, ×ÜÖ®°Ñprotover 2ÓÃµ½ËÀÎªÖ¹
-		getBytesByShort(buffer, (short)2);
-		ss << buffer[0] << buffer[1];
-
-		// 7ÊÇ¼ÓÈë·¿¼äµÄ»ñÈ¡µ¯Ä»(Ò²¾ÍÊÇ¼øÈ¨°ü)£¬2ÊÇĞÄÌø°ü·ÀÖ¹Ç¿ÖÆµôÏß
-		getBytesByInt(buffer, (int)7);
-		ss << buffer[0] << buffer[1] << buffer[2] << buffer[3];
-
-
-		
-		getBytesByInt(buffer, (int)1);
-		ss << buffer[0] << buffer[1] << buffer[2] << buffer[3];
-
-		//×îºó½«json×Ö·û´®Ò²Ğ´Èë½øÈ¥
-		ss << m_apiInfo.authBody;
-		//×îºóÉú³É·¿¼ä°ü£¬²¢½«°ü·¢ËÍ¸ø·şÎñÆ÷
-		std::string roomPack = ss.str();
-		FString rooPackStr(roomPack.c_str());
-
-		// ´Ë´¦µÄ'\0'²»ÄÜ°üÀ¨½øÈ¥
-		if (!Socket->IsConnected())
+		Socket->OnConnected().AddLambda([&]() -> void
 		{
-			// Don't send if we're not connected.
-			UE_LOG(LogTemp, Log, TEXT("WebSocket is not connected"));
-			CallbackError(ERROR_WEBSOCKET_CONNECT);
-			return;
-		}
-		Socket->Send(roomPack.data(), roomPack.size(), true);
-		UWorld* world = GEngine->GameViewport->GetWorld();
-		if (world == nullptr) {
-			UE_LOG(LogTemp, Log, TEXT("UWorld is null"));
-			return;
-		}
-		world->GetTimerManager().SetTimer(m_beatTimer, this, &UBWebsocket::heartBeat, 29, true);
+			// This code will run once connected.
+			std::stringstream ss;
+			//unsigned char buffer[4] = {};
+			TArray<unsigned char> buffer;
+			buffer.Init(0, 4);
+	
+			//å†™å…¥éªŒè¯å­—ç¬¦ä¸²é•¿åº¦
+			getBytesByInt(buffer, (int)(m_apiInfo.authBody.length() + 16));
+	
+			ss << buffer[0] << buffer[1] << buffer[2] << buffer[3];
+			// 16æ˜¯å¿…é¡»çš„ï¼Œè™½ç„¶ä¸çŸ¥é“ä¸ºä»€ä¹ˆ
+			getBytesByShort(buffer, (short)16);
+			ss << buffer[0] << buffer[1];
+	
+			//æœ‰å†…é¬¼è¯´å·²ç»æœ‰ protover = 3 äº†, æ€»ä¹‹æŠŠprotover 2ç”¨åˆ°æ­»ä¸ºæ­¢
+			getBytesByShort(buffer, (short)2);
+			ss << buffer[0] << buffer[1];
+	
+			// 7æ˜¯åŠ å…¥æˆ¿é—´çš„è·å–å¼¹å¹•(ä¹Ÿå°±æ˜¯é‰´æƒåŒ…)ï¼Œ2æ˜¯å¿ƒè·³åŒ…é˜²æ­¢å¼ºåˆ¶æ‰çº¿
+			getBytesByInt(buffer, (int)7);
+			ss << buffer[0] << buffer[1] << buffer[2] << buffer[3];
+	
+	
+			
+			getBytesByInt(buffer, (int)1);
+			ss << buffer[0] << buffer[1] << buffer[2] << buffer[3];
+	
+			//æœ€åå°†jsonå­—ç¬¦ä¸²ä¹Ÿå†™å…¥è¿›å»
+			ss << m_apiInfo.authBody;
+			//æœ€åç”Ÿæˆæˆ¿é—´åŒ…ï¼Œå¹¶å°†åŒ…å‘é€ç»™æœåŠ¡å™¨
+			std::string roomPack = ss.str();
+			FString rooPackStr(roomPack.c_str());
+	
+			// æ­¤å¤„çš„'\0'ä¸èƒ½åŒ…æ‹¬è¿›å»
+			if (!Socket->IsConnected())
+			{
+				// Don't send if we're not connected.
+				UE_LOG(LogTemp, Log, TEXT("WebSocket is not connected"));
+				//CallbackError(ERROR_WEBSOCKET_CONNECT);
+				return;
+			}
+			Socket->Send(roomPack.data(), roomPack.size(), true);
+			if(GEngine != nullptr && GEngine->GameViewport != nullptr) {
+				UWorld* world = GEngine->GameViewport->GetWorld();
+				if (world == nullptr) {
+					UE_LOG(LogTemp, Log, TEXT("UWorld is null"));
+					return;
+				}
+				world->GetTimerManager().SetTimer(m_beatTimer, this, &UBWebsocket::heartBeat, 29, true, 1);
+			}
+			else
+			{
+				UE_LOG(LogTemp, Log, TEXT("UWorld is null"));
+			}
 		});
 
 		Socket->OnConnectionError().AddLambda([=](const FString& Error) -> void {
@@ -82,67 +89,70 @@ void UBWebsocket::init(const ApiInfo& apiInfo, CALLBACKERROR CallbackError, CALL
 			CallbackError(ERROR_WEBSOCKET_CONNECT);
 			});
 
-		Socket->OnClosed().AddLambda([=](int32 StatusCode, const FString& Reason, bool bWasClean) -> void {
+		Socket->OnClosed().AddLambda([=](int32 StatusCode, const FString& Reason, bool bWasClean) -> void
+		{
 			// This code will run when the connection to the server has been terminated.
 			// Because of an error or a call to Socket->Close().
-			// ¶Ï¿ªÁ¬½ÓÁË£¬ÄÇÃ´¾Í¹Ø±Õwebsocket£¬²¢·¢ËÍÁ¬½ÓÒÑ¾­¶Ï¿ªµÄĞÅºÅ,¹Ø±ÕĞÄÌø¶¨Ê±Æ÷
+			// æ–­å¼€è¿æ¥äº†ï¼Œé‚£ä¹ˆå°±å…³é—­websocketï¼Œå¹¶å‘é€è¿æ¥å·²ç»æ–­å¼€çš„ä¿¡å·,å…³é—­å¿ƒè·³å®šæ—¶å™¨
 			UE_LOG(LogTemp, Log, TEXT("WebSocket is closed, Reason is %s"), *Reason);
 			this->Socket->Close();
 			CallbackError(ERROR_WEBSOCKET_DISCONNECT);
-			UWorld* WorldPtr = GEngine->GameViewport->GetWorld();
-			if(WorldPtr != nullptr)
-			{
-				GetWorld()->GetTimerManager().ClearTimer(m_beatTimer);
+			if(GEngine != nullptr && GEngine->GameViewport != nullptr) {
+				UWorld* world = GEngine->GameViewport->GetWorld();
+				if(world != nullptr)
+				{
+					world->GetTimerManager().ClearTimer(m_beatTimer);
+				}
 			}
-			});
+		});
 
 		Socket->OnRawMessage().AddLambda([=](const void* Message/* Data */, SIZE_T Size/* Size */, SIZE_T BytesRemaining) -> void {
 			// This code will run when we receive a string message from the server.
-			//Á¬½Ó³É¹¦£¬·µ»Ø26¸ö×Ö½ÚµÄÊı¾İ,ÕâÀïÖ±½ÓÊ¡ÂÔÕâ²½µÄ½âÎö
+			//è¿æ¥æˆåŠŸï¼Œè¿”å›26ä¸ªå­—èŠ‚çš„æ•°æ®,è¿™é‡Œç›´æ¥çœç•¥è¿™æ­¥çš„è§£æ
     		if (Size != 26)
     		{
     		    unsigned char *buffer = (unsigned char *)Message;
-    		    //¶ÁÈ¡°üµÄ³¤¶È
+    		    //è¯»å–åŒ…çš„é•¿åº¦
     		    int packetLength = toInt(buffer, 0);
 		
     		    int headerLength = toShort(buffer, 4);
-    		    //´¦ÀíÀàĞÍ,2ÎªgzipÊı¾İ°ü£¬µ¯Ä»£¬ÀñÎï£¬½øÈëÖ±²¥¼äµÄ¶¼ÊÇÕâÖÖÊı¾İ
+    		    //å¤„ç†ç±»å‹,2ä¸ºgzipæ•°æ®åŒ…ï¼Œå¼¹å¹•ï¼Œç¤¼ç‰©ï¼Œè¿›å…¥ç›´æ’­é—´çš„éƒ½æ˜¯è¿™ç§æ•°æ®
     		    int version = toShort(buffer, 6);
     		    int action = toInt(buffer, 8);
     		    int parameter = toInt(buffer, 12);
 		
     		    if (packetLength > 20)
     		    {
-    		        // version == 2 ±íÊ¾Êı¾İÊ¹ÓÃÁËzlibÑ¹Ëõ
+    		        // version == 2 è¡¨ç¤ºæ•°æ®ä½¿ç”¨äº†zlibå‹ç¼©
     		        if (version == 2)
     		        {
     		            uLong unzip_size = UNZIP_BUFF_SIZE;
     		            if (uncompress(unzipBuffer, &unzip_size, buffer + 16, packetLength - 16) == 0)
     		            {
-    		                //´Ë´¦£¬½âÑ¹³öÀ´µÄËùÓĞÊı¾İ±»³ÆÖ®Îª´ó°ü£¬ÀïÃæµÄÃ¿Ìõµ¯Ä»ĞÅÏ¢±»³ÆÎª×Ó°ü
-    		                //ÓĞÊ±ºòÊÇ¶à¸ö×Ó°ü·ÅÔÚÒ»Æğ·¢ËÍ¹ıÀ´µÄ£¬Òª¶ÔÕû¸ö°ü½âÆÊ´¦Àí£¬³õÊ¼Î»ÖÃ¿Ï¶¨´Ó0¿ªÊ¼ÁË
+    		                //æ­¤å¤„ï¼Œè§£å‹å‡ºæ¥çš„æ‰€æœ‰æ•°æ®è¢«ç§°ä¹‹ä¸ºå¤§åŒ…ï¼Œé‡Œé¢çš„æ¯æ¡å¼¹å¹•ä¿¡æ¯è¢«ç§°ä¸ºå­åŒ…
+    		                //æœ‰æ—¶å€™æ˜¯å¤šä¸ªå­åŒ…æ”¾åœ¨ä¸€èµ·å‘é€è¿‡æ¥çš„ï¼Œè¦å¯¹æ•´ä¸ªåŒ…è§£å‰–å¤„ç†ï¼Œåˆå§‹ä½ç½®è‚¯å®šä»0å¼€å§‹äº†
     		                uLong allsize = 0;
-    		                //µ±Òª´¦ÀíÎ»ÖÃ¸ú½âÑ¹³öÀ´µÄ´óĞ¡Ò»ÖÂÊ±£¬ÄÇ¾ÍÊÇÕû¸ö´ó°ü¶¼´¦ÀíÍêÁË
+    		                //å½“è¦å¤„ç†ä½ç½®è·Ÿè§£å‹å‡ºæ¥çš„å¤§å°ä¸€è‡´æ—¶ï¼Œé‚£å°±æ˜¯æ•´ä¸ªå¤§åŒ…éƒ½å¤„ç†å®Œäº†
     		                while (allsize < unzip_size)
     		                {
-    		                    //¶ÁÈ¡×Ó°üµÄ³¤¶È£¬²¢¼ÇÂ¼
+    		                    //è¯»å–å­åŒ…çš„é•¿åº¦ï¼Œå¹¶è®°å½•
     		                    int packetLength2 = toInt(unzipBuffer, allsize + 0);
     		                    int headerLength2 = toShort(unzipBuffer, allsize + 4);
     		                    int version2 = toShort(unzipBuffer, allsize + 6);
     		                    int action2 = toInt(unzipBuffer, allsize + 8);
     		                    int parameter2 = toInt(unzipBuffer, allsize + 12);
 		
-    		                    //ÌáÈ¡×Ö·û´®
+    		                    //æå–å­—ç¬¦ä¸²
     		                    int end = packetLength2 + allsize;
     		                    char c = unzipBuffer[end];
     		                    unzipBuffer[end] = '\0';
     		                    std::string data = (char *)(unzipBuffer + allsize + 16);
     		                    unzipBuffer[end] = c;
 		
-    		                    // È»ºó¾ÍÊÇ´¦ÀíÊı¾İÁË ...
+    		                    // ç„¶åå°±æ˜¯å¤„ç†æ•°æ®äº† ...
     		                	CallbackMessage(data);
 		
-    		                    //´¦ÀíÍêÕâ¸ö×Ó°üºó¼ÇµÃ½«´ó°ü´¦ÀíÎ»ÖÃ½øĞĞÆ«ÒÆ
+    		                    //å¤„ç†å®Œè¿™ä¸ªå­åŒ…åè®°å¾—å°†å¤§åŒ…å¤„ç†ä½ç½®è¿›è¡Œåç§»
     		                    allsize += packetLength2;
     		                }
     		            }
@@ -155,10 +165,6 @@ void UBWebsocket::init(const ApiInfo& apiInfo, CALLBACKERROR CallbackError, CALL
     		        }
     		    }
     		}
-			});
-
-		Socket->OnRawMessage().AddLambda([](const void* Data, SIZE_T Size, SIZE_T BytesRemaining) -> void {
-			// This code will run when we receive a raw (binary) message from the server.
 			});
 
 		Socket->OnMessageSent().AddLambda([](const FString& MessageString) -> void {
@@ -195,21 +201,22 @@ int UBWebsocket::toShort(unsigned char* buffer, int index)
 
 void UBWebsocket::heartBeat()
 {
-	//ĞÄÌø°ü
+	//å¿ƒè·³åŒ…
 	static char heartBeatData[16] = { 0x00, 0x00, 0x00, 0x10,
 								  0x00, 0x10,
 								  0x00, 0x01,
 								  0x00, 0x00, 0x00, 0x02,
 								  0x00, 0x00, 0x00, 0x01 };
 
-	// Ö»ÓĞwebsocket»¹´¦ÓÚÕı³£Á¬½Ó×´Ì¬ÏÂ²ÅÄÜ·¢ËÍĞÄÌø°ü
+	// åªæœ‰websocketè¿˜å¤„äºæ­£å¸¸è¿æ¥çŠ¶æ€ä¸‹æ‰èƒ½å‘é€å¿ƒè·³åŒ…
 	if (this->Socket != nullptr && this->Socket->IsConnected())
 	{
+		UE_LOG(LogTemp, Log, TEXT("å‘é€websocketå¿ƒè·³"));
 		this->Socket->Send(heartBeatData, sizeof(heartBeatData), true);
 	}
 	else
 	{
-		UE_LOG(LogTemp, Log, TEXT("websocketÒì³£"));
+		UE_LOG(LogTemp, Log, TEXT("websocketå¼‚å¸¸"));
 	}
 }
 

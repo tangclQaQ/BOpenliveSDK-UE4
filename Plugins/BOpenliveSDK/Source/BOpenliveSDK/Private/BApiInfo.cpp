@@ -1,6 +1,6 @@
 #include "BApiInfo.h"
 /*
- * ∂®“Â“ª–©sdk π”√µƒ ˝æ›∏Ò Ω
+ * ÂÆö‰πâ‰∏Ä‰∫õsdk‰ΩøÁî®ÁöÑÊï∞ÊçÆÊ†ºÂºè
  */
 ApiInfo::ApiInfo(const nlohmann::json& jsonData)
 {
@@ -21,13 +21,13 @@ void ApiInfo::setValue(const nlohmann::json& jsonData)
 	}
 }
 
-// µØƒª
-DanmaData::DanmaData(const nlohmann::json& jsonData)
+// ÂºπÂπï
+FDanmuData::FDanmuData(const nlohmann::json& jsonData)
 {
 	setValue(jsonData);
 }
 
-void DanmaData::setValue(const nlohmann::json& jsonData)
+void FDanmuData::setValue(const nlohmann::json& jsonData)
 {
 	uid = jsonData["uid"].get<int64_t>();
 	timestamp = jsonData["timestamp"].get<int64_t>();
@@ -42,13 +42,13 @@ void DanmaData::setValue(const nlohmann::json& jsonData)
 	fans_medal_name = FString(UTF8_TO_TCHAR(jsonData["fans_medal_name"].get<std::string>().c_str()));
 }
 
-// ¿ÒŒÔ
-GiftData::GiftData(const nlohmann::json& jsonData)
+// Á§ºÁâ©
+FGiftData::FGiftData(const nlohmann::json& jsonData)
 {
 	setValue(jsonData);
 }
 
-void GiftData::setValue(const nlohmann::json& jsonData)
+void FGiftData::setValue(const nlohmann::json& jsonData)
 {
 	room_id = jsonData["room_id"].get<int64_t>();
 	uid = jsonData["uid"].get<int64_t>();
@@ -71,13 +71,13 @@ void GiftData::setValue(const nlohmann::json& jsonData)
 	anchor_info.uname = FString(UTF8_TO_TCHAR(jsonData["anchor_info"]["uname"].get<std::string>().c_str()));
 }
 
-// ¥Û∫Ω∫£
-GuardBuyData::GuardBuyData(const nlohmann::json& jsonData)
+// Â§ßËà™Êµ∑
+FGuardBuyData::FGuardBuyData(const nlohmann::json& jsonData)
 {
 	setValue(jsonData);
 }
 
-void GuardBuyData::setValue(const nlohmann::json& jsonData)
+void FGuardBuyData::setValue(const nlohmann::json& jsonData)
 {
 	guard_level = jsonData["guard_level"].get<int64_t>();
 	guard_num = jsonData["guard_num"].get<int64_t>();
@@ -94,13 +94,13 @@ void GuardBuyData::setValue(const nlohmann::json& jsonData)
 	user_info.uname = FString(UTF8_TO_TCHAR(jsonData["user_info"]["uname"].get<std::string>().c_str()));
 }
 
-// ∏∂∑—¡Ù—‘
-SuperChatData::SuperChatData(const nlohmann::json& jsonData)
+// ‰ªòË¥πÁïôË®Ä
+FSuperChatData::FSuperChatData(const nlohmann::json& jsonData)
 {
 	setValue(jsonData);
 }
 
-void SuperChatData::setValue(const nlohmann::json& jsonData)
+void FSuperChatData::setValue(const nlohmann::json& jsonData)
 {
 	room_id = jsonData["room_id"].get<int64_t>();
 	uid = jsonData["uid"].get<int64_t>();

@@ -26,38 +26,63 @@
 *	For more info on custom blueprint nodes visit documentation:
 *	https://wiki.unrealengine.com/Custom_Blueprint_Node_Creation
 */
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FReceiveDanmu, FDanmuData, data);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FReceiveGift, FGiftData, data);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FReceiveSuperChatData, FSuperChatData, data);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FReceiveGuardBuy, FGuardBuyData, data);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FStartError, int32, errNo, FString, errString);
+
 UCLASS()
-class UBOpenliveSDKBPLibrary : public UBlueprintFunctionLibrary
+class BOPENLIVESDK_API UBOpenliveSDKBPLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_UCLASS_BODY()
 
+	UFUNCTION(BlueprintCallable)
 	static UBOpenliveSDKBPLibrary* GetInstancePtr();
-	
-	void init(const std::string &accessKeyId, const std::string &accessKeySecret, const std::string &appId, const std::string &code);
+	UFUNCTION(BlueprintCallable)
+	void init(FString accessKeyId, FString accessKeySecret, FString appId, FString code);
+	UFUNCTION(BlueprintCallable)
+	void Start();
+	UFUNCTION(BlueprintCallable)
+	void Stop();
+
+public:
 	void CreateWebsocket();
 	static void WebSocketError(EErrorString error);
 	static void WebSocketMessage(std::string message);
-	void Start();
+	static void OnEndInteractivePlay(bool isSuccess, const std::string& message);
 	static void OnStartInteractivePlay(bool isSuccess, const std::string& message);
 	void timerEvent();
 	static void OnTimerEvent(bool isSuccess, const std::string & response);
 
+	UPROPERTY(BlueprintAssignable)
+	FReceiveDanmu ReceiveDanmuEvent;
+	UPROPERTY(BlueprintAssignable)
+	FReceiveGift FReceiveGiftEvent;
+	UPROPERTY(BlueprintAssignable)
+	FReceiveSuperChatData FReceiveSuperChatDataEvent;
+	UPROPERTY(BlueprintAssignable)
+	FReceiveGuardBuy FReceiveGuardBuyEvent;
+	UPROPERTY(BlueprintAssignable)
+	FStartError FStartErrorEvent;
+
 private:
 	static UBOpenliveSDKBPLibrary* s_UBSdk;
-	std::string m_accessKeyId;     // ¿ª·¢Õßid
-	std::string m_accessKeySecret; // ¿ª·¢ÕßÃÜÔ¿
-	std::string m_appId;           // ÏîÄ¿id
-	std::string m_code;            // Ö÷²¥Éí·İÂë
+	std::string m_accessKeyId;     // å¼€å‘è€…id
+	std::string m_accessKeySecret; // å¼€å‘è€…å¯†é’¥
+	std::string m_appId;           // é¡¹ç›®id
+	std::string m_code;            // ä¸»æ’­èº«ä»½ç 
 
-	int timerId; // ¼ÆÊ±Æ÷id
+	int timerId; // è®¡æ—¶å™¨id
 
 	ApiInfo apiInfo;
 
-	DanmaData danmaData;               // µ¯Ä»
-	GiftData giftData;                 // ÀñÎï
-	GuardBuyData guardBuyData;         // ´óº½º£
-	SuperChatData superChatData;       // ¸¶·ÑÁôÑÔ
-	SuperChatDelData superChatDelData; // ¹ıÊ±µÄ¸¶·ÑÁôÑÔid
+	FDanmuData danmuData;               // å¼¹å¹•
+	FGiftData giftData;                 // ç¤¼ç‰©
+	FGuardBuyData guardBuyData;         // å¤§èˆªæµ·
+	FSuperChatData superChatData;       // ä»˜è´¹ç•™è¨€
+	SuperChatDelData superChatDelData; // è¿‡æ—¶çš„ä»˜è´¹ç•™è¨€id
 
 	UBWebsocket *danMuQWebsocket = nullptr;
 	BApi *bapi = nullptr;

@@ -204,8 +204,10 @@ struct FSuperChatData
 };
 
 //过时的付费留言
-struct SuperChatDelData
+USTRUCT(BlueprintType)
+struct FSuperChatDelData
 {
+	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = BOpenliveSDK)
 	int64 room_id;                  // 直播间id
@@ -214,8 +216,8 @@ struct SuperChatDelData
 	
 	std::vector<int64_t> message_ids; // 消息唯一id
 
-	explicit SuperChatDelData(const nlohmann::json& jsonData);
-	SuperChatDelData() = default;
+	explicit FSuperChatDelData(const nlohmann::json& jsonData);
+	FSuperChatDelData() = default;
 	void setValue(const nlohmann::json& jsonData);
 };
 

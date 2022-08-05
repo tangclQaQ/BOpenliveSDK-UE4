@@ -72,6 +72,7 @@ void UBWebsocket::init(const ApiInfo& apiInfo, CALLBACKERROR CallbackError, CALL
 				return;
 			}
 			Socket->Send(roomPack.data(), roomPack.size(), true);
+			//鉴权包发送完以后，开启websocket心跳的定时器
 			if(GEngine != nullptr && GEngine->GameViewport != nullptr) {
 				UWorld* world = GEngine->GameViewport->GetWorld();
 				if (world == nullptr) {

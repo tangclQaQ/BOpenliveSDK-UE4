@@ -121,12 +121,12 @@ void FSuperChatData::setValue(const nlohmann::json& jsonData)
 	msg_id = FString(UTF8_TO_TCHAR(jsonData["msg_id"].get<std::string>().c_str()));
 }
 
-SuperChatDelData::SuperChatDelData(const nlohmann::json& jsonData)
+FSuperChatDelData::FSuperChatDelData(const nlohmann::json& jsonData)
 {
 	setValue(jsonData);
 }
 
-void SuperChatDelData::setValue(const nlohmann::json& jsonData)
+void FSuperChatDelData::setValue(const nlohmann::json& jsonData)
 {
 	room_id = jsonData["room_id"].get<int64_t>();
 	msg_id = FString(UTF8_TO_TCHAR(jsonData["msg_id"].get<std::string>().c_str()));

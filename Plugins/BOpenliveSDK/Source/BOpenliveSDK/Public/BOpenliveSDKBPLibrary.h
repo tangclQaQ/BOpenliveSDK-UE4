@@ -30,6 +30,7 @@
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FReceiveDanmu, FDanmuData, data);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FReceiveGift, FGiftData, data);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FReceiveSuperChatData, FSuperChatData, data);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FReceiveSuperChatDelData, FSuperChatDelData, data);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FReceiveGuardBuy, FGuardBuyData, data);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FStartError, int32, errNo, FString, errString);
 
@@ -63,6 +64,8 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FReceiveSuperChatData FReceiveSuperChatDataEvent;
 	UPROPERTY(BlueprintAssignable)
+	FReceiveSuperChatDelData FReceiveSuperChatDelDataEvent;
+	UPROPERTY(BlueprintAssignable)
 	FReceiveGuardBuy FReceiveGuardBuyEvent;
 	UPROPERTY(BlueprintAssignable)
 	FStartError FStartErrorEvent;
@@ -82,7 +85,7 @@ private:
 	FGiftData giftData;                 // 礼物
 	FGuardBuyData guardBuyData;         // 大航海
 	FSuperChatData superChatData;       // 付费留言
-	SuperChatDelData superChatDelData; // 过时的付费留言id
+	FSuperChatDelData superChatDelData; // 过时的付费留言id
 
 	UBWebsocket *danMuQWebsocket = nullptr;
 	BApi *bapi = nullptr;

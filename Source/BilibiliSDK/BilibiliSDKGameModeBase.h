@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "BApiInfo.h"
 #include "GameFramework/GameModeBase.h"
 #include "BilibiliSDKGameModeBase.generated.h"
 
@@ -16,7 +15,5 @@ class BILIBILISDK_API ABilibiliSDKGameModeBase : public AGameModeBase
 	GENERATED_BODY()
 
 	virtual void BeginPlay() override;
-
-	void Test(FDanmuData data);
 	
 };

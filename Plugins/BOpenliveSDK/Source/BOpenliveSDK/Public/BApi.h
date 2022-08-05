@@ -1,4 +1,6 @@
-﻿#pragma once
+﻿// Copyright 2022 斑_tcl, Inc. All Rights Reserved.
+
+#pragma once
 #include <string>
 #include <functional>
 #include "Interfaces/IHttpRequest.h"

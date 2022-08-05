@@ -1,4 +1,4 @@
-// Some copyright should be here...
+// Copyright 2022 斑_tcl, Inc. All Rights Reserved.
 
 using UnrealBuildTool;
 
@@ -7,7 +7,10 @@ public class BOpenliveSDK : ModuleRules
 	public BOpenliveSDK(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
-		
+        bEnableExceptions = true;
+		bEnableUndefinedIdentifierWarnings = false;
+
+
 		PublicIncludePaths.AddRange(
 			new string[] {
 				// ... add public include paths required here ...

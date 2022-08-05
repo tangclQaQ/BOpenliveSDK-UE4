@@ -1,7 +1,8 @@
-﻿// Copyright Epic Games, Inc. All Rights Reserved.
+﻿// Copyright 2022 斑_tcl, Inc. All Rights Reserved.
 
 #include "BOpenliveSDKBPLibrary.h"
 #include "BOpenliveSDK.h"
+#include "Engine.h"
 
 UBOpenliveSDKBPLibrary*	UBOpenliveSDKBPLibrary::s_UBSdk = nullptr;
 UBOpenliveSDKBPLibrary::UBOpenliveSDKBPLibrary(const FObjectInitializer& ObjectInitializer)

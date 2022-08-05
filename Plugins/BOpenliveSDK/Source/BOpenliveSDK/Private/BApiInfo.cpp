@@ -1,3 +1,5 @@
+// Copyright 2022 斑_tcl, Inc. All Rights Reserved.
+
 #include "BApiInfo.h"
 /*
  * 定义一些sdk使用的数据格式

@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+// Copyright 2022 斑_tcl, Inc. All Rights Reserved.
 
 #pragma once
 
@@ -38,13 +38,13 @@ class BOPENLIVESDK_API UBOpenliveSDKBPLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_UCLASS_BODY()
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = BOpenliveSDK)
 	static UBOpenliveSDKBPLibrary* GetInstancePtr();
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = BOpenliveSDK)
 	void init(FString accessKeyId, FString accessKeySecret, FString appId, FString code);
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = BOpenliveSDK)
 	void Start();
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = BOpenliveSDK)
 	void Stop();
 
 public:

@@ -5,3 +5,15 @@
 /Intermediate
 /Saved
 /Plugins/BOpenliveSDK/Intermediate
+/WindowsNoEditor
+/package
+/package.bat
+/BOpenliveSDK
+Binaries/Win64/BilibiliSDK.exe
+Binaries/Win64/BilibiliSDK.exp
+Binaries/Win64/BilibiliSDK.lib
+Binaries/Win64/BilibiliSDK.pdb
+Binaries/Win64/BilibiliSDK.target
+Binaries/Win64/OpenImageDenoise.dll
+Binaries/Win64/tbb12.dll
+/Build

@@ -1,7 +1,10 @@
+// Copyright 2022 斑_tcl, Inc. All Rights Reserved.
+
 #include "BWebsocket.h"
 #include "iostream"
 #include "Chaos/AABB.h"
 #include "Chaos/AABB.h"
+#include "Engine.h"
 
 /*
  * 对接B站WebSocket

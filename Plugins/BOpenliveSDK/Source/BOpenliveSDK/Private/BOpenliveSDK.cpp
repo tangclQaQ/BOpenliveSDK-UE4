@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+// Copyright 2022 斑_tcl, Inc. All Rights Reserved.
 
 #include "BOpenliveSDK.h"
 

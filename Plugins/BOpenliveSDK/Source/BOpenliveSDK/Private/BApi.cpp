@@ -1,5 +1,8 @@
-﻿#include "BApi.h"
+﻿// Copyright 2022 斑_tcl, Inc. All Rights Reserved.
+
+#include "BApi.h"
 #include "HttpModule.h"
+#include "Misc/SecureHash.h"
 #include "Tool/Sha256.h"
 #include <ctime>
 #include <map>

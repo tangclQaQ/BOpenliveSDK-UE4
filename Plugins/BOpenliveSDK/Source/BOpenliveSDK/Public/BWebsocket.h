@@ -1,3 +1,5 @@
+// Copyright 2022 斑_tcl, Inc. All Rights Reserved.
+
 #pragma once
 
 #include "CoreMinimal.h"

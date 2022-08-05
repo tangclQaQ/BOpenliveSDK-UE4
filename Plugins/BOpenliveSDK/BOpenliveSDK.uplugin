@@ -3,11 +3,11 @@
 	"Version": 1,
 	"VersionName": "1.0",
 	"FriendlyName": "BOpenliveSDK",
-	"Description": "",
+	"Description": "这是一款对接Bilibili官方直播弹幕互动平台接口的SDK",
 	"Category": "Other",
-	"CreatedBy": "",
-	"CreatedByURL": "",
-	"DocsURL": "",
+	"CreatedBy": "斑_tcl",
+	"CreatedByURL": "https://github.com/tangclQaQ",
+	"DocsURL": "https://github.com/tangclQaQ/BilibiliSDK-UE4",
 	"MarketplaceURL": "",
 	"SupportURL": "",
 	"CanContainContent": true,
@@ -18,7 +18,8 @@
 		{
 			"Name": "BOpenliveSDK",
 			"Type": "Runtime",
-			"LoadingPhase": "PreLoadingScreen"
+			"LoadingPhase": "PreLoadingScreen",
+			"WhitelistPlatforms": [ "Win64" ]
 		}
 	]
 }

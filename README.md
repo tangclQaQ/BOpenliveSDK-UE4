@@ -1,4 +1,4 @@
-# BilibiliSDK-UE4
+# BOpenliveSDK-UE4
 Blibili直播弹幕互动官方接口
 - 隔壁Unity都有sdk，我们大UE也必须有
 - 目前实现的接口有：初始化参数、开启游戏、关闭游戏，实现的通知消息有：弹幕消息、礼物消息、SC消息、SC撤回消息、舰长消息

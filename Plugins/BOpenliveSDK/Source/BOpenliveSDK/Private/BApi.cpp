@@ -1,4 +1,4 @@
-﻿// Copyright 2022 斑_tcl, Inc. All Rights Reserved.
+﻿// Copyright 2022 Tangcl, Inc. All Rights Reserved.
 
 #include "BApi.h"
 #include "HttpModule.h"

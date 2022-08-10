@@ -1,4 +1,4 @@
-﻿// Copyright 2022 斑_tcl, Inc. All Rights Reserved.
+﻿// Copyright 2022 Tangcl, Inc. All Rights Reserved.
 
 #include "BOpenliveSDKBPLibrary.h"
 #include "BOpenliveSDK.h"
@@ -131,7 +131,7 @@ void UBOpenliveSDKBPLibrary::OnStartInteractivePlay(bool isSuccess, const std::s
 	//开启长链http请求的回调
 	if(isSuccess == false)
 	{
-		GetInstancePtr()->FStartErrorEvent.Broadcast(1, "网络异常");
+		GetInstancePtr()->FStartErrorEvent.Broadcast(1, TEXT("网络异常"));
 		return;
 	}
 	try
@@ -157,7 +157,7 @@ void UBOpenliveSDKBPLibrary::OnStartInteractivePlay(bool isSuccess, const std::s
 	}
 	catch (nlohmann::detail::exception& e)
 	{
-		GetInstancePtr()->FStartErrorEvent.Broadcast(2, "json数据异常");
+		GetInstancePtr()->FStartErrorEvent.Broadcast(2, TEXT("json数据异常"));
 		UE_LOG(LogTemp, Log, TEXT("json数据异常，错误码：%d"), e.id);
 	}
 }

@@ -5,9 +5,9 @@
 #include <CoreMinimal.h>
 #include <string>
 #include <vector>
-#include "BOpenliveSDK/Private/Tool/json.hpp"
 #include <stdint.h>
 
+#include "BOpenliveSDK/ThirdParty/json.hpp"
 #include "Engine/DataTable.h"
 
 #include <BApiInfo.generated.h>

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "WebSocketsModule.h" // Module definition
+#include "Modules/ModuleManager.h"
 #include "IWebSocket.h"       // Socket definition
 #include "BApiInfo.h"
 #include "TimerManager.h"

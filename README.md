@@ -38,3 +38,5 @@ Blibili直播弹幕互动官方接口
 项目参考：https://github.com/CXHGT/BilibiliSdkDemo
 
 此插件是根据该项目，进行的移植，同时增加了代码的健壮性，
+
+部分bug修复：B站UP：虚幻4-无，提供帮助

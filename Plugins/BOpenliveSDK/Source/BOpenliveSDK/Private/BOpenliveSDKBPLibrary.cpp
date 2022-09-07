@@ -53,6 +53,9 @@ void UBOpenliveSDKBPLibrary::WebSocketMessage(std::string message)
 	//写C++好几年了，头一次写try catch
 	try
 	{
+		FString messageStr(UTF8_TO_TCHAR(message.c_str()));
+		UE_LOG(LogTemp, Log, TEXT("message is %s"), *messageStr);
+		
 		nlohmann::json jsonData = nlohmann::json::parse(message);
 		std::string cmd = jsonData["cmd"].get<std::string>();
 		if (cmd.find("LIVE_OPEN_PLATFORM_DM") != std::string::npos) {

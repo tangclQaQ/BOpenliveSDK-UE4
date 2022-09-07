@@ -5,6 +5,7 @@
 #include "Chaos/AABB.h"
 #include "Chaos/AABB.h"
 #include "Engine.h"
+#include "Modules/ModuleManager.h"
 
 /*
  * 对接B站WebSocket
@@ -25,6 +26,12 @@ void UBWebsocket::init(const ApiInfo& apiInfo, CALLBACKERROR CallbackError, CALL
 	}
 	const FString ServerURL = apiInfo.wssLink[0].c_str(); // 默认使用第一条url
 	const FString ServerProtocol = TEXT("ws");              // The WebServer protocol you want to use.
+
+	//B站UP虚幻4-无修正。如果没加载"WebSockets"模块，那么就加载他。防止打包后出现问题
+	if (!FModuleManager::Get().IsModuleLoaded("WebSockets"))
+	{
+		FModuleManager::Get().LoadModule("WebSockets");
+	}
 	Socket = FWebSocketsModule::Get().CreateWebSocket(ServerURL, ServerProtocol);
 
 	// We bind all available events

@@ -3,7 +3,7 @@
 #include "BApi.h"
 #include "HttpModule.h"
 #include "Misc/SecureHash.h"
-#include "Tool/Sha256.h"
+#include "BOpenliveSDK/ThirdParty/Sha256.h"
 #include <ctime>
 #include <map>
 

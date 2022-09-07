@@ -21,7 +21,7 @@ private:
 	std::string m_accessKeySecret;
 private:
 	void ApiPost(const std::string& url, const std::string& bodyData, CallBack callback);
-#if (ENGINE_MAJOR_VERSION == 4 && ENGINE_MINOR_VERSION >= 27) || (ENGINE_MAJOR_VERSION == 5)
+#if (ENGINE_MAJOR_VERSION == 4 && ENGINE_MINOR_VERSION >= 26) || (ENGINE_MAJOR_VERSION == 5)
 	void ApiSetReqHeader(TSharedRef<IHttpRequest, ESPMode::ThreadSafe> &request, const std::string &bodyData);
 #else
 	void ApiSetReqHeader(TSharedRef<IHttpRequest> &request, const std::string &bodyData);

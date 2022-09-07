@@ -48,7 +48,7 @@ void BApi::ApiPost(const std::string& url, const std::string& bodyData, CallBack
 }
 
 // 添加验证用的请求头
-#if (ENGINE_MAJOR_VERSION == 4 && ENGINE_MINOR_VERSION >= 27) || (ENGINE_MAJOR_VERSION == 5)
+#if (ENGINE_MAJOR_VERSION == 4 && ENGINE_MINOR_VERSION >= 26) || (ENGINE_MAJOR_VERSION == 5)
 void BApi::ApiSetReqHeader(TSharedRef<IHttpRequest, ESPMode::ThreadSafe>& request, const std::string& bodyData)
 #else
 void BApi::ApiSetReqHeader(TSharedRef<IHttpRequest>& request, const std::string& bodyData)

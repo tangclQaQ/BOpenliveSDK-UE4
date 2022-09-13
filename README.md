@@ -6,7 +6,7 @@ Blibili直播弹幕互动官方接口
 - 纯C++代码插件，核心代码均用的是原生C++代码，如果想参考此插件移植到其他C++平台也很轻松
 
 ## 插件接入流程（图文教程）
-1. 将此示例项目里的Plugins\BOpenliveSDK文件夹复制到自己项目的Plugin目录中
+1. 将此示例项目里的Plugins\BOpenliveSDK文件夹复制到自己项目的Plugins目录中
    ![img.png](Picture/img.png)
 2. 接入完毕，是不是很easy
 

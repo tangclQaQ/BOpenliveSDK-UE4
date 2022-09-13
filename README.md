@@ -7,6 +7,7 @@ Blibili直播弹幕互动官方接口
 
 ## 插件接入流程（图文教程）
 1. 将此示例项目里的Plugins\BOpenliveSDK文件夹复制到自己项目的Plugins目录中
+
    ![img.png](Picture/img.png)
 2. 接入完毕，是不是很easy
 

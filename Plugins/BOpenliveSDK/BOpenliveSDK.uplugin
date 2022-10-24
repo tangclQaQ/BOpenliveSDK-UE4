@@ -1,7 +1,7 @@
 {
 	"FileVersion": 3,
-	"Version": 1,
-	"VersionName": "1.0",
+	"Version": 2,
+	"VersionName": "1.2",
 	"FriendlyName": "BOpenliveSDK",
 	"Description": "这是一款对接Bilibili官方直播弹幕互动平台接口的SDK",
 	"Category": "Other",

@@ -89,6 +89,11 @@ void UBOpenliveSDKBPLibrary::Start()
 
 void UBOpenliveSDKBPLibrary::Stop()
 {
+	if(apiInfo.gameId == "")
+	{
+		return;
+	}
+	
 	//关闭长链，同时利用函数指针当做回调函数，来处理http请求返回的数据
 	if(GEngine != nullptr && GEngine->GameViewport != nullptr) {
 		UWorld* world = GEngine->GameViewport->GetWorld();

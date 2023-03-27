@@ -18,3 +18,4 @@ Binaries/Win64/OpenImageDenoise.dll
 Binaries/Win64/tbb12.dll
 /Build
 /Windows
+.vsconfig

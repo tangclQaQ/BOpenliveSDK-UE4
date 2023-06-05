@@ -73,11 +73,15 @@ void UBOpenliveSDKBPLibrary::WebSocketMessage(std::string message)
 		} else if (cmd.find("LIVE_OPEN_PLATFORM_GUARD") != std::string::npos) {
 			GetInstancePtr()->guardBuyData.setValue(jsonData["data"]);
 			GetInstancePtr()->FReceiveGuardBuyEvent.Broadcast(GetInstancePtr()->guardBuyData);
+		} else if (cmd.find("LIVE_OPEN_PLATFORM_LIKE") != std::string::npos) {
+			GetInstancePtr()->likeData.setValue(jsonData["data"]);
+			GetInstancePtr()->FReceiveLikeEvent.Broadcast(GetInstancePtr()->likeData);
 		}
 	}
 	catch (nlohmann::detail::exception& e)
 	{
-		UE_LOG(LogTemp, Log, TEXT("json数据异常，错误码：%d"), e.id);
+		std::string error = e.what();
+		UE_LOG(LogTemp, Log, TEXT("json数据异常，错误码：%d, 错误信息wei:%s"), e.id, *FString(error.c_str()));
 	}
 }
 
@@ -102,7 +106,12 @@ void UBOpenliveSDKBPLibrary::Stop()
 			world->GetTimerManager().ClearTimer(m_beatTimer);
 		}
 	}
-	bapi->EndInteractivePlay(m_appId, apiInfo.gameId, OnEndInteractivePlay);
+	bapi->EndInteractivePlay(m_appId, TCHAR_TO_UTF8(*apiInfo.gameId), OnEndInteractivePlay);
+}
+
+FApiInfo UBOpenliveSDKBPLibrary::GetAnchorInfo()
+{
+	return apiInfo;
 }
 
 void UBOpenliveSDKBPLibrary::OnEndInteractivePlay(bool isSuccess, const std::string& message)
@@ -130,7 +139,8 @@ void UBOpenliveSDKBPLibrary::OnEndInteractivePlay(bool isSuccess, const std::str
 	}
 	catch (nlohmann::detail::exception& e)
 	{
-		UE_LOG(LogTemp, Log, TEXT("json数据异常，错误码：%d"), e.id);
+		std::string error = e.what();
+		UE_LOG(LogTemp, Log, TEXT("json数据异常，错误码：%d, 错误信息wei:%s"), e.id, *FString(error.c_str()));
 	}
 }
 
@@ -166,7 +176,8 @@ void UBOpenliveSDKBPLibrary::OnStartInteractivePlay(bool isSuccess, const std::s
 	catch (nlohmann::detail::exception& e)
 	{
 		GetInstancePtr()->FStartErrorEvent.Broadcast(2, TEXT("json数据异常"));
-		UE_LOG(LogTemp, Log, TEXT("json数据异常，错误码：%d"), e.id);
+		std::string error = e.what();
+		UE_LOG(LogTemp, Log, TEXT("json数据异常，错误码：%d, 错误信息wei:%s"), e.id, *FString(error.c_str()));
 	}
 }
 
@@ -176,7 +187,7 @@ void UBOpenliveSDKBPLibrary::timerEvent()
 	static int count = 0;
 	// 这里使用的是19秒发一次心跳包
 	if (count >= 19) {
-		bapi->HeartBeatInteractivePlay(apiInfo.gameId, &UBOpenliveSDKBPLibrary::OnTimerEvent);
+		bapi->HeartBeatInteractivePlay(TCHAR_TO_UTF8(*apiInfo.gameId), &UBOpenliveSDKBPLibrary::OnTimerEvent);
 		count = 0;
 	} else {
 		++count;
@@ -208,7 +219,8 @@ void UBOpenliveSDKBPLibrary::OnTimerEvent(bool isSuccess, const std::string & re
 		}
 		catch (nlohmann::detail::exception& e)
 		{
-			UE_LOG(LogTemp, Log, TEXT("json数据异常，错误码：%d"), e.id);
+			std::string error = e.what();
+			UE_LOG(LogTemp, Log, TEXT("json数据异常，错误码：%d, 错误信息wei:%s"), e.id, *FString(error.c_str()));
 		}
 	}
 	else

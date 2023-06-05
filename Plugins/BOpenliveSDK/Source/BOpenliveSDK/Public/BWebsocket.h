@@ -25,7 +25,7 @@ public:
 	UBWebsocket();
 	~UBWebsocket();
 
-	void init(const ApiInfo& apiInfo, CALLBACKERROR CallbackError, CALLBACKMESSAGE CallbackMessage);
+	void init(const FApiInfo& apiInfo, CALLBACKERROR CallbackError, CALLBACKMESSAGE CallbackMessage);
 	void getBytesByInt(TArray<unsigned char> &buffer, int value);
 	void getBytesByShort(TArray<unsigned char> &buffer, short value);
 	int toInt(unsigned char* buffer, int index);
@@ -35,7 +35,7 @@ public:
 
 private:
 	TSharedPtr<IWebSocket> Socket;
-	ApiInfo m_apiInfo;
+	FApiInfo m_apiInfo;
 	FTimerHandle m_beatTimer;
 	unsigned char unzipBuffer[UNZIP_BUFF_SIZE];
 };

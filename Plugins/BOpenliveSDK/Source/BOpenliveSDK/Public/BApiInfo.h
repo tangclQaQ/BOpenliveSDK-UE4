@@ -21,18 +21,27 @@ struct AuthInfo
 	std::string code;
 };
 
-struct ApiInfo
+USTRUCT(BlueprintType)
+struct FApiInfo
 {
-	int64_t roomId;                   // 房间id
-	int64_t uid;                      // 主播uid
-	std::string uface;                // 主播头像
-	std::string uname;                // 主播名称
-	std::string gameId;               // 游戏id
-	std::string authBody;             // 验证用的
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = BOpenliveSDK)
+	int64 roomId;                   // 房间id
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = BOpenliveSDK)
+	int64 uid;                      // 主播uid
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = BOpenliveSDK)
+	FString uface;                // 主播头像
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = BOpenliveSDK)
+	FString uname;                // 主播名称
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = BOpenliveSDK)
+	FString gameId;               // 游戏id
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = BOpenliveSDK)
+	FString authBody;             // 验证用的
 	std::vector<std::string> wssLink; // wss可用的地址
 
-	explicit ApiInfo(const nlohmann::json& jsonData);
-	ApiInfo() = default;
+	explicit FApiInfo(const nlohmann::json& jsonData);
+	FApiInfo() = default;
 	void setValue(const nlohmann::json& jsonData);
 };
 
@@ -74,7 +83,13 @@ struct BOPENLIVESDK_API FDanmuData : public FTableRowBase
 	FString msg;         
 	// 粉丝勋章名       
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = BOpenliveSDK)
-	FString fans_medal_name;    
+	FString fans_medal_name;
+	// 表情包图片地址
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = BOpenliveSDK)
+	FString emoji_img_url;         
+	// 弹幕类型 0：普通弹幕 1：表情包弹幕       
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = BOpenliveSDK)
+	int64 dm_type;  
 
 	explicit FDanmuData(const nlohmann::json& jsonData);
 	FDanmuData() = default;
@@ -275,6 +290,46 @@ struct FSuperChatDelData
 
 	explicit FSuperChatDelData(const nlohmann::json& jsonData);
 	FSuperChatDelData() = default;
+	void setValue(const nlohmann::json& jsonData);
+};
+
+//点赞消息
+//过时的付费留言
+USTRUCT(BlueprintType)
+struct FLikeData
+{
+	GENERATED_BODY()
+
+	// 用户昵称
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = BOpenliveSDK)
+	FString uname;
+	// 用户UID
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = BOpenliveSDK)
+	int64 uid;               
+	// 用户头像
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = BOpenliveSDK)
+	FString uface;
+	// 时间秒级时间戳
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = BOpenliveSDK)
+	int64 timestamp;
+	// 发生的直播间
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = BOpenliveSDK)
+	int64 room_id;
+	// 点赞文案( “xxx点赞了”)
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = BOpenliveSDK)
+	FString like_text;
+	// 该房间粉丝勋章佩戴情况
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = BOpenliveSDK)
+	bool fans_medal_wearing_status;
+	// 粉丝勋章名
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = BOpenliveSDK)
+	FString fans_medal_name;
+	// 对应房间勋章信息
+	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = BOpenliveSDK)
+	int64 fans_medal_level;
+
+	explicit FLikeData(const nlohmann::json& jsonData);
+	FLikeData() = default;
 	void setValue(const nlohmann::json& jsonData);
 };
 

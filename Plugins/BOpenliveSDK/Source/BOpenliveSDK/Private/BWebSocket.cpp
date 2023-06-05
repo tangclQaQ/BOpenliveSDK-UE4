@@ -17,7 +17,7 @@ UBWebsocket::~UBWebsocket()
 {
 }
 
-void UBWebsocket::init(const ApiInfo& apiInfo, CALLBACKERROR CallbackError, CALLBACKMESSAGE CallbackMessage)
+void UBWebsocket::init(const FApiInfo& apiInfo, CALLBACKERROR CallbackError, CALLBACKMESSAGE CallbackMessage)
 {
 	m_apiInfo = apiInfo;
 	if (apiInfo.wssLink.empty()) {
@@ -44,7 +44,7 @@ void UBWebsocket::init(const ApiInfo& apiInfo, CALLBACKERROR CallbackError, CALL
 			buffer.Init(0, 4);
 	
 			//写入验证字符串长度
-			getBytesByInt(buffer, (int)(m_apiInfo.authBody.length() + 16));
+			getBytesByInt(buffer, (int64_t)(m_apiInfo.authBody.Len() + 16));
 	
 			ss << buffer[0] << buffer[1] << buffer[2] << buffer[3];
 			// 16是必须的，虽然不知道为什么
@@ -65,7 +65,7 @@ void UBWebsocket::init(const ApiInfo& apiInfo, CALLBACKERROR CallbackError, CALL
 			ss << buffer[0] << buffer[1] << buffer[2] << buffer[3];
 	
 			//最后将json字符串也写入进去
-			ss << m_apiInfo.authBody;
+			ss << TCHAR_TO_UTF8(*m_apiInfo.authBody);
 			//最后生成房间包，并将包发送给服务器
 			std::string roomPack = ss.str();
 			FString rooPackStr(roomPack.c_str());
@@ -233,5 +233,9 @@ void UBWebsocket::heartBeat()
 
 bool UBWebsocket::getIsConnected()
 {
+	// if(Socket == nullptr)
+	// {
+	// 	return false;
+	// }
 	return Socket->IsConnected();
 }

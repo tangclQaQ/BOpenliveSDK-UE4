@@ -4,19 +4,19 @@
 /*
  * 定义一些sdk使用的数据格式
  */
-ApiInfo::ApiInfo(const nlohmann::json& jsonData)
+FApiInfo::FApiInfo(const nlohmann::json& jsonData)
 {
 	setValue(jsonData);
 }
 
-void ApiInfo::setValue(const nlohmann::json& jsonData)
+void FApiInfo::setValue(const nlohmann::json& jsonData)
 {
-	this->roomId = jsonData["anchor_info"]["room_id"].get<int>();
-	this->uid = jsonData["anchor_info"]["uid"].get<int>();
-	this->uface = jsonData["anchor_info"]["uface"].get<std::string>();
-	this->uname = jsonData["anchor_info"]["uname"].get<std::string>();
-	this->gameId = jsonData["game_info"]["game_id"].get<std::string>();
-	this->authBody = jsonData["websocket_info"]["auth_body"].get<std::string>();
+	this->roomId = jsonData["anchor_info"]["room_id"].get<int64_t>();
+	this->uid = jsonData["anchor_info"]["uid"].get<int64_t>();
+	this->uface = FString(UTF8_TO_TCHAR(jsonData["anchor_info"]["uface"].get<std::string>().c_str()));
+	this->uname = FString(UTF8_TO_TCHAR(jsonData["anchor_info"]["uname"].get<std::string>().c_str()));
+	this->gameId = FString(UTF8_TO_TCHAR(jsonData["game_info"]["game_id"].get<std::string>().c_str()));
+	this->authBody = FString(UTF8_TO_TCHAR(jsonData["websocket_info"]["auth_body"].get<std::string>().c_str()));
 	for (int index = 0; index < jsonData["websocket_info"]["wss_link"].size(); ++index)
 	{
 		this->wssLink.push_back(jsonData["websocket_info"]["wss_link"][0].get<std::string>());
@@ -45,6 +45,8 @@ void FDanmuData::setValue(const nlohmann::json& jsonData)
 	uface = FString(UTF8_TO_TCHAR(jsonData["uface"].get<std::string>().c_str()));
 	msg = FString(UTF8_TO_TCHAR(jsonData["msg"].get<std::string>().c_str()));
 	fans_medal_name = FString(UTF8_TO_TCHAR(jsonData["fans_medal_name"].get<std::string>().c_str()));
+	emoji_img_url = FString(UTF8_TO_TCHAR(jsonData["emoji_img_url"].get<std::string>().c_str()));
+	dm_type = jsonData["dm_type"].get<int64_t>();
 }
 
 // 礼物
@@ -147,4 +149,22 @@ void FSuperChatDelData::setValue(const nlohmann::json& jsonData)
 	{
 		message_ids.push_back(jsonData["message_ids"][index].get<int64_t>());
 	}
+}
+
+FLikeData::FLikeData(const nlohmann::json& jsonData)
+{
+	setValue(jsonData);
+}
+
+void FLikeData::setValue(const nlohmann::json& jsonData)
+{
+	uname = FString(UTF8_TO_TCHAR(jsonData["uname"].get<std::string>().c_str()));
+	uid = jsonData["uid"].get<int64_t>();
+	uface = FString(UTF8_TO_TCHAR(jsonData["uface"].get<std::string>().c_str()));
+	timestamp = jsonData["timestamp"].get<int64_t>();
+	room_id = jsonData["room_id"].get<int64_t>();
+	like_text = FString(UTF8_TO_TCHAR(jsonData["like_text"].get<std::string>().c_str()));
+	fans_medal_wearing_status = jsonData["fans_medal_wearing_status"].get<bool>();
+	fans_medal_name = FString(UTF8_TO_TCHAR(jsonData["fans_medal_name"].get<std::string>().c_str()));
+	fans_medal_level = jsonData["fans_medal_level"].get<int64_t>();
 }

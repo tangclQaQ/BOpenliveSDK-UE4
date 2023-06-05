@@ -32,6 +32,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FReceiveGift, FGiftData, data);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FReceiveSuperChatData, FSuperChatData, data);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FReceiveSuperChatDelData, FSuperChatDelData, data);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FReceiveGuardBuy, FGuardBuyData, data);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FReceiveLike, FLikeData, data);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FStartError, int32, errNo, FString, errString);
 
 UCLASS()
@@ -47,6 +48,8 @@ class BOPENLIVESDK_API UBOpenliveSDKBPLibrary : public UBlueprintFunctionLibrary
 	void Start();
 	UFUNCTION(BlueprintCallable, Category = BOpenliveSDK)
 	void Stop();
+	UFUNCTION(BlueprintCallable, Category = BOpenliveSDK)
+	FApiInfo GetAnchorInfo();
 
 public:
 	void CreateWebsocket();
@@ -68,6 +71,8 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FReceiveGuardBuy FReceiveGuardBuyEvent;
 	UPROPERTY(BlueprintAssignable)
+	FReceiveLike FReceiveLikeEvent;
+	UPROPERTY(BlueprintAssignable)
 	FStartError FStartErrorEvent;
 
 private:
@@ -79,13 +84,14 @@ private:
 
 	int timerId; // 计时器id
 
-	ApiInfo apiInfo;
+	FApiInfo apiInfo;
 
 	FDanmuData danmuData;               // 弹幕
 	FGiftData giftData;                 // 礼物
 	FGuardBuyData guardBuyData;         // 大航海
 	FSuperChatData superChatData;       // 付费留言
 	FSuperChatDelData superChatDelData; // 过时的付费留言id
+	FLikeData likeData;                 // 点赞
 
 	UBWebsocket *danMuQWebsocket = nullptr;
 	BApi *bapi = nullptr;

@@ -13,6 +13,7 @@ void FApiInfo::setValue(const nlohmann::json& jsonData)
 {
 	this->roomId = jsonData["anchor_info"]["room_id"].get<int64_t>();
 	this->uid = jsonData["anchor_info"]["uid"].get<int64_t>();
+	this->open_id = FString(UTF8_TO_TCHAR(jsonData["anchor_info"]["open_id"].get<std::string>().c_str()));
 	this->uface = FString(UTF8_TO_TCHAR(jsonData["anchor_info"]["uface"].get<std::string>().c_str()));
 	this->uname = FString(UTF8_TO_TCHAR(jsonData["anchor_info"]["uname"].get<std::string>().c_str()));
 	this->gameId = FString(UTF8_TO_TCHAR(jsonData["game_info"]["game_id"].get<std::string>().c_str()));
@@ -42,6 +43,7 @@ void FDanmuData::setValue(const nlohmann::json& jsonData)
 		fans_medal_wearing_status = jsonData["fans_medal_wearing_status"].get<bool>();
 	}
 	uname = FString(UTF8_TO_TCHAR(jsonData["uname"].get<std::string>().c_str()));
+	open_id = FString(UTF8_TO_TCHAR(jsonData["open_id"].get<std::string>().c_str()));
 	uface = FString(UTF8_TO_TCHAR(jsonData["uface"].get<std::string>().c_str()));
 	msg = FString(UTF8_TO_TCHAR(jsonData["msg"].get<std::string>().c_str()));
 	fans_medal_name = FString(UTF8_TO_TCHAR(jsonData["fans_medal_name"].get<std::string>().c_str()));
@@ -59,6 +61,7 @@ void FGiftData::setValue(const nlohmann::json& jsonData)
 {
 	room_id = jsonData["room_id"].get<int64_t>();
 	uid = jsonData["uid"].get<int64_t>();
+	open_id = jsonData["open_id"].get<std::string>().c_str();
 	gift_id = jsonData["gift_id"].get<int64_t>();
 	gift_num = jsonData["gift_num"].get<int64_t>();
 	price = jsonData["price"].get<int64_t>();
@@ -77,6 +80,7 @@ void FGiftData::setValue(const nlohmann::json& jsonData)
 	msg_id = FString(UTF8_TO_TCHAR(jsonData["msg_id"].get<std::string>().c_str()));
 
 	anchor_info.uid = jsonData["anchor_info"]["uid"].get<int64_t>();
+	anchor_info.open_id = FString(UTF8_TO_TCHAR(jsonData["anchor_info"]["open_id"].get<std::string>().c_str()));
 	anchor_info.uface = FString(UTF8_TO_TCHAR(jsonData["anchor_info"]["uface"].get<std::string>().c_str()));
 	anchor_info.uname = FString(UTF8_TO_TCHAR(jsonData["anchor_info"]["uname"].get<std::string>().c_str()));
 }
@@ -103,6 +107,7 @@ void FGuardBuyData::setValue(const nlohmann::json& jsonData)
 	msg_id = FString(UTF8_TO_TCHAR(jsonData["msg_id"].get<std::string>().c_str()));
 
 	user_info.uid = jsonData["user_info"]["uid"].get<int64_t>();
+	user_info.open_id = FString(UTF8_TO_TCHAR(jsonData["user_info"]["open_id"].get<std::string>().c_str()));
 	user_info.uface = FString(UTF8_TO_TCHAR(jsonData["user_info"]["uface"].get<std::string>().c_str()));
 	user_info.uname = FString(UTF8_TO_TCHAR(jsonData["user_info"]["uname"].get<std::string>().c_str()));
 }
@@ -117,6 +122,7 @@ void FSuperChatData::setValue(const nlohmann::json& jsonData)
 {
 	room_id = jsonData["room_id"].get<int64_t>();
 	uid = jsonData["uid"].get<int64_t>();
+	open_id = FString(UTF8_TO_TCHAR(jsonData["open_id"].get<std::string>().c_str()));
 	message_id = jsonData["message_id"].get<int64_t>();
 	rmb = jsonData["rmb"].get<int64_t>();
 	timestamp = jsonData["timestamp"].get<int64_t>();
@@ -160,6 +166,7 @@ void FLikeData::setValue(const nlohmann::json& jsonData)
 {
 	uname = FString(UTF8_TO_TCHAR(jsonData["uname"].get<std::string>().c_str()));
 	uid = jsonData["uid"].get<int64_t>();
+	open_id = FString(UTF8_TO_TCHAR(jsonData["open_id"].get<std::string>().c_str()));
 	uface = FString(UTF8_TO_TCHAR(jsonData["uface"].get<std::string>().c_str()));
 	timestamp = jsonData["timestamp"].get<int64_t>();
 	room_id = jsonData["room_id"].get<int64_t>();

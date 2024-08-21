@@ -30,6 +30,8 @@ struct FApiInfo
 	int64 roomId;                   // 房间id
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = BOpenliveSDK)
 	int64 uid;                      // 主播uid
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = BOpenliveSDK)
+	FString open_id;                      // 用户唯一标识
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = BOpenliveSDK)
 	FString uface;                // 主播头像
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = BOpenliveSDK)
@@ -53,7 +55,10 @@ struct BOPENLIVESDK_API FDanmuData : public FTableRowBase
 
 	// 用户UID
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = BOpenliveSDK)
-	int64 uid;                    
+	int64 uid;     
+	// 用户唯一标识
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = BOpenliveSDK)
+	FString open_id;                      
 	// 弹幕发送时间秒级时间戳
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = BOpenliveSDK)
 	int64 timestamp;              
@@ -104,6 +109,9 @@ struct FUserInfo
 	// 收礼主播uid
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = BOpenliveSDK)
 	int64 uid;
+	// 用户唯一标识
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = BOpenliveSDK)
+	FString open_id;
 	// 收礼主播昵称
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = BOpenliveSDK)
 	FString uname;
@@ -126,6 +134,9 @@ struct FGiftData
 	// 送礼用户UID
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = BOpenliveSDK)
 	int64 uid;
+	// 用户唯一标识
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = BOpenliveSDK)
+	FString open_id;
 	// 道具id(盲盒:爆出道具id)
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = BOpenliveSDK)
 	int64 gift_id;
@@ -228,6 +239,9 @@ struct FSuperChatData
 	// 购买用户UID
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = BOpenliveSDK)
 	int64 uid;
+	// 用户唯一标识
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = BOpenliveSDK)
+	FString open_id;
 	// 留言id(风控场景下撤回留言需要)
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = BOpenliveSDK)
 	int64 message_id;
@@ -306,6 +320,9 @@ struct FLikeData
 	// 用户UID
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = BOpenliveSDK)
 	int64 uid;               
+	// 用户唯一标识
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = BOpenliveSDK)
+	FString open_id;
 	// 用户头像
 	UPROPERTY(EditAnywhere,BlueprintReadWrite, Category = BOpenliveSDK)
 	FString uface;
